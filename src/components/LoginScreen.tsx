@@ -3,10 +3,9 @@ import { useContext } from "react";
 import LoginContext from "../Context";
 const LoginScreen = () => {
   const loginContext = useContext(LoginContext);
-  const { isLoggedIn, setIsLoggedIn } = loginContext;
   return (
     <>
-      {!isLoggedIn && (
+      {!loginContext.userInfo.isLoggedIn && (
         <div className="flex-col gap-y-4 flex items-center justify-center h-screen w-screen">
           <div className="flex items-center justify-center">
             <img src={logo} className="w-20"></img>
@@ -34,9 +33,16 @@ const LoginScreen = () => {
           <form
             method="post"
             action="/"
-            onClick={(e) => {
+            onSubmit={(e) => {
               e.preventDefault();
-              setIsLoggedIn(true);
+              const newUserInfo = {
+                name: "roman",
+                isLoggedIn: true,
+                accId: "289y282",
+                email: "roman.cabalum@gmail.com",
+              };
+              loginContext.setUserInfo(newUserInfo);
+              console.log(loginContext.userInfo);
             }}
           >
             <div className="flex flex-col gap-y-2 justify-center">
@@ -57,10 +63,7 @@ const LoginScreen = () => {
                 ></input>
               </div>
               <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsLoggedIn(false);
-                }}
+                type="submit"
                 className="bg-fuchsia-900 hover:bg-fuchsia-700 text-white font-bold py-2 px-4 rounded"
               >
                 Sign in with email

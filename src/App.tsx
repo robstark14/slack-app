@@ -1,11 +1,18 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import LoginScreen from "./components/LoginScreen";
 import LoginContext from "./Context";
+import { userInfoInterface } from "./Context";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const value = { isLoggedIn, setIsLoggedIn };
+  const [userInfo, setUserInfo] = useState<userInfoInterface>({
+    isLoggedIn: false,
+    name: "",
+    accId: "",
+    email: "",
+  });
+
+  const value = { userInfo, setUserInfo };
   return (
     <>
       <LoginContext.Provider value={value}>
