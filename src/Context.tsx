@@ -1,5 +1,13 @@
 import { createContext } from "react";
 
-const LoginContext = createContext({ isLoggedIn: false, userData: {} });
+interface LoginContextInterface {
+  isLoggedIn: boolean;
+  setIsLoggedIn: any;
+}
+
+const LoginContext = createContext<LoginContextInterface>({
+  isLoggedIn: false,
+  setIsLoggedIn: (state: boolean) => {},
+});
 
 export default LoginContext;
