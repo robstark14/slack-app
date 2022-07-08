@@ -1,3 +1,6 @@
+import "./App.css";
+import Header from "./components/Header";
+import SideBar from "./components/Sidebar";
 import { useState } from "react";
 import "./App.css";
 import LoginScreen from "./components/LoginScreen";
@@ -6,6 +9,7 @@ import LoginContext, {
   userInfoInterface,
 } from "./Context";
 import Footer from "./components/Footer";
+
 function App() {
   //state managed by userInfo context provider
   const [userInfo, setUserInfo] = useState<userInfoInterface>({
@@ -36,6 +40,14 @@ function App() {
           <div className="h-screen md:h-fit overflow-hidden bg-gray-700 flex flex-col justify-end">
             <LoginScreen />
             <Footer {...footerData /*must use spread operator */} />
+          </div>
+        )}
+        {userInfo.isLoggedIn && (
+          <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-full ">
+            <Header />
+            <SideBar />
+
+            {/* <div> Chat goes here</div> */}
           </div>
         )}
       </LoginContext.Provider>
