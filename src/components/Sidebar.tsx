@@ -1,6 +1,14 @@
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { FC, useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { db } from "../config/firebase_config";
+import ChatNav from "./ChatNav";
 
-const SideBar = () => {
+interface Props {
+  channels: object[];
+}
+
+const SideBar: FC<Props> = ({ channels }) => {
   return (
     <div className="w-[260px] h-full bg-[#350d36] shadow-lg text-white grid text-left items-center">
       <div className="grid grid-cols-[3fr,1fr,2fr] w-full h-[50px] border border-x-transparent border-y-[#481249] p-4 ">
@@ -52,10 +60,18 @@ const SideBar = () => {
         </div>
       </div>
       <div className="text-left w-full p-4 border border-x-transparent border-b-transparent border-t-[#481249]">
-        <h1>Channels</h1>
-        <div className="btn flex items-center">
-          <span className="material-symbols-outlined scale-75 pr-2">lock</span>
-          <span>batch19 </span>
+        <div className="flex justify-between">
+          <h1>Channels</h1>
+          <span className="material-symbols-outlined btn scale-75 pr-2">
+            add
+          </span>
+        </div>
+        <div className="grid">
+          {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
+          <span>batch19 </span> */}
+          {channels.map((channel) => (
+            <ChatNav channel={channel} />
+          ))}
         </div>
       </div>
       <div className="btn flex items-center p-4 ">
