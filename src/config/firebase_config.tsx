@@ -1,4 +1,5 @@
 // Import the functions you need from the SDKs you need
+import { v4 as uuidv4 } from "uuid";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {
@@ -9,6 +10,8 @@ import {
   where,
   limit,
   getDocs,
+  setDoc,
+  doc,
 } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,13 +33,34 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
 export const queryUser: Function = async (login: {
   email: string;
   password: string;
 }) => {
-  const db = getFirestore(app);
   const users = collection(db, "users");
   const req = query(users, where("email", "==", login.email), limit(1));
   return await getDocs(req).then((res) => res.docs[0].data());
+};
+export const createUser: Function = async (newUser: {
+  email: string;
+  name: string;
+  password: string;
+}): Promise<object> => {
+  const newUuid: string = uuidv4();
+  const users = doc(db, "users", newUuid);
+  const current = {
+    name: newUser.name,
+    email: newUser.email,
+    password: newUser.password,
+    accId: newUuid,
+  };
+  await setDoc(users, current);
+  const find = query(
+    collection(db, "users"),
+    where("email", "==", current.email),
+    limit(1)
+  );
+  return await getDocs(find).then((res) => res.docs[0].data());
 };

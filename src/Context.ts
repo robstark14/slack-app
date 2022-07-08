@@ -14,7 +14,7 @@ export interface footerDataInterface {
 
 interface LoginContextInterface {
   userInfo: userInfoInterface;
-  setUserInfo: any;
+  setUserInfo: Function;
 }
 
 const LoginContext = createContext<LoginContextInterface>({

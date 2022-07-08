@@ -2,6 +2,7 @@ import logo from "../logo512.png";
 import React, { useContext, useState } from "react";
 import LoginContext from "../Context";
 import { queryUser } from "../config/firebase_config";
+import SignUp from "./SignUp";
 
 const LoginScreen: React.FC = () => {
   //for userInfo
@@ -11,16 +12,18 @@ const LoginScreen: React.FC = () => {
     email?: string;
     password?: string;
   }
+
   const [loginInput, setLoginInput] = useState<loginInterface>({
     email: "",
     password: "",
   });
+  const [isSignUp, setSignUp] = useState<boolean>(false);
 
   //input states
 
   //login handler
   async function handeLogin(): Promise<void> {
-    const result = await queryUser(loginInput).then((data: any) => {
+    await queryUser(loginInput).then((data: any) => {
       if (!data) return;
       loginContext.setUserInfo({
         isLoggedIn: true,
@@ -35,7 +38,7 @@ const LoginScreen: React.FC = () => {
 
   return (
     <>
-      <div className="flex-col gap-y-5 flex items-center mt-10 text-white justify-center h-100 md:h-fit w-screen my-4">
+      <div className="flex-col gap-y-5 flex items-center mt-10 text-white justify-center md:h-fit w-screen my-4">
         <div className="flex h-fit items-center justify-center">
           <img src={logo} alt="react-logo" className="logo w-1/5"></img>
         </div>
@@ -47,8 +50,16 @@ const LoginScreen: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-col gap-y-2 w-6/12 md:w-2/5 l:w-1/5 xl:w-1/5">
-          <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+          <button className="bg-transparent group flex align-center justify-center group-hover:fill-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
             Sign in with Google
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="32px"
+              width="32px"
+              className="fill-blue-700 group-hover:fill-white "
+            >
+              <path d="M 16.003906 14.0625 L 16.003906 18.265625 L 21.992188 18.265625 C 21.210938 20.8125 19.082031 22.636719 16.003906 22.636719 C 12.339844 22.636719 9.367188 19.664063 9.367188 16 C 9.367188 12.335938 12.335938 9.363281 16.003906 9.363281 C 17.652344 9.363281 19.15625 9.96875 20.316406 10.964844 L 23.410156 7.867188 C 21.457031 6.085938 18.855469 5 16.003906 5 C 9.925781 5 5 9.925781 5 16 C 5 22.074219 9.925781 27 16.003906 27 C 25.238281 27 27.277344 18.363281 26.371094 14.078125 Z" />
+            </svg> */}
           </button>
           <button className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
             Sign in with Apple
@@ -68,55 +79,58 @@ const LoginScreen: React.FC = () => {
             handeLogin();
           }}
         >
-          <div className="flex flex-col gap-y-2 justify-center">
-            <div>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="username"
-                type="text"
-                placeholder="name@work-email.com"
-                value={loginInput.email}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setLoginInput((prev) => ({
-                    ...prev,
-                    email: value,
-                  }));
+          {!isSignUp && (
+            <div className="flex flex-col gap-y-2 justify-center">
+              <div>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="username"
+                  type="text"
+                  placeholder="name@work-email.com"
+                  value={loginInput.email}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setLoginInput((prev) => ({
+                      ...prev,
+                      email: value,
+                    }));
+                  }}
+                ></input>
+              </div>
+              <div>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setLoginInput((prev) => ({
+                      ...prev,
+                      password: value,
+                    }));
+                  }}
+                  value={loginInput.password}
+                ></input>
+              </div>
+              <button
+                type="submit"
+                className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+              >
+                Sign in with email
+              </button>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSignUp(true);
                 }}
-              ></input>
+                className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+              >
+                Create an Account
+              </button>
             </div>
-            <div>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
-                type="password"
-                placeholder="Password"
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setLoginInput((prev) => ({
-                    ...prev,
-                    password: value,
-                  }));
-                }}
-                value={loginInput.password}
-              ></input>
-            </div>
-            <button
-              type="submit"
-              className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
-            >
-              Sign in with email
-            </button>
-            <button
-              type="submit"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-              className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
-            >
-              Create an Account
-            </button>
-          </div>
+          )}
+          {isSignUp && <SignUp setSignUp={setSignUp} />}
         </form>
       </div>
     </>

@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
 import LoginContext from "../Context";
 
 const SideBar = () => {

@@ -39,7 +39,7 @@ function App() {
     <>
       <LoginContext.Provider value={value}>
         {!userInfo.isLoggedIn && (
-          <div className="h-screen md:h-fit overflow-hidden bg-gray-700 flex flex-col justify-end">
+          <div className="h-screen bg-gray-700 grid grid-rows-[70%, 30%] overflow-x-hidden grid-cols-1 justify-end items-end">
             <LoginScreen />
             <Footer {...footerData /*must use spread operator */} />
           </div>
