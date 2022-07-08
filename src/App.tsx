@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { FC, useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
@@ -9,9 +8,22 @@ import ChatPanel from "./components/ChatPanel";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "./config/firebase_config";
 import AddChannel from "./components/AddChannel";
-
+import LoginScreen from "./components/LoginScreen";
+import LoginContext, {
+  footerDataInterface,
+  userInfoInterface,
+} from "./Context";
+import Footer from "./components/Footer";
 function App() {
   const [channels, setChannels] = useState<object[]>([]);
+  //state managed by userInfo context provider
+  const [userInfo, setUserInfo] = useState<userInfoInterface>({
+    isLoggedIn: false,
+    name: "",
+    accId: "",
+    email: "",
+  });
+
   useEffect(() => {
     getAllChannels();
   }, [channels]);
@@ -22,37 +34,6 @@ function App() {
       );
     });
   };
-  return (
-    <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-full ">
-      <Header />
-      <SideBar channels={channels} />
-      <Routes>
-        <Route path="/chatPanel/:panelId" element={<ChatPanel />}></Route>
-        <Route path="/addChannel" element={<AddChannel />}></Route>
-      </Routes>
-=======
-import "./App.css";
-import Header from "./components/Header";
-import SideBar from "./components/Sidebar";
-import { useState } from "react";
-import "./App.css";
-import LoginScreen from "./components/LoginScreen";
-import LoginContext, {
-  footerDataInterface,
-  userInfoInterface,
-} from "./Context";
-import Footer from "./components/Footer";
-
-function App() {
-  //state managed by userInfo context provider
-  const [userInfo, setUserInfo] = useState<userInfoInterface>({
-    isLoggedIn: false,
-    name: "",
-    accId: "",
-    email: "",
-  });
->>>>>>> a5615e16b5ed021893569a37abba58c6372da0e7
-
   const value = { userInfo, setUserInfo };
 
   //see context.ts for footerData
@@ -79,9 +60,12 @@ function App() {
         {userInfo.isLoggedIn && (
           <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-full ">
             <Header />
-            <SideBar />
+            <SideBar channels={channels} />
 
-            {/* <div> Chat goes here</div> */}
+            <Routes>
+              <Route path="/chatPanel/:panelId" element={<ChatPanel />}></Route>
+              <Route path="/addChannel" element={<AddChannel />}></Route>
+            </Routes>
           </div>
         )}
       </LoginContext.Provider>
