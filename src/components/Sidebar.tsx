@@ -1,5 +1,6 @@
+import LoginContext from "../Context";
 import { collection, doc, onSnapshot } from "firebase/firestore";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { db } from "../config/firebase_config";
 import ChatNav from "./ChatNav";
@@ -7,8 +8,9 @@ import ChatNav from "./ChatNav";
 interface Props {
   channels: object[];
 }
-
 const SideBar: FC<Props> = ({ channels }) => {
+  const loginContext = useContext(LoginContext);
+
   return (
     <div className="w-[260px] h-full bg-[#350d36] shadow-lg text-white grid text-left items-center">
       <div className="grid grid-cols-[3fr,1fr,2fr] w-full h-[50px] border border-x-transparent border-y-[#481249] p-4 ">

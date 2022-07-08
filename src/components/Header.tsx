@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import sample from "../sample.jpg";
 import useOnOutsideClick from "./useOnOutsideClick";
-const Header = () => {
-  const [recentModal, setRecentModal] = useState(false);
+const Header: React.FC = () => {
+  const [recentModal, setRecentModal] = useState<boolean>(false);
   const ref = useRef();
 
   useOnOutsideClick(ref, () => setRecentModal(false));

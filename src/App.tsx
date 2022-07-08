@@ -22,6 +22,7 @@ function App() {
     name: "",
     accId: "",
     email: "",
+    password: "",
   });
 
   useEffect(() => {
@@ -38,11 +39,12 @@ function App() {
 
   //see context.ts for footerData
   const footerData: footerDataInterface = {
-    description: "bkjbjbjasbdbasdsadsasa",
+    description:
+      "A React/Firebase app made in fulfillment of AvionSchool's Requirements",
     labels: [
       {
         title: "Links",
-        links: ["link1", "link2"],
+        links: ["Roman", "Rob"],
         href: ["https://google.com", "https://yahoo.com"],
       },
     ],
@@ -52,7 +54,7 @@ function App() {
     <>
       <LoginContext.Provider value={value}>
         {!userInfo.isLoggedIn && (
-          <div className="h-screen md:h-fit overflow-hidden bg-gray-700 flex flex-col justify-end">
+          <div className="h-screen bg-gray-700 grid grid-rows-[70%, 30%] overflow-x-hidden grid-cols-1 justify-end items-end">
             <LoginScreen />
             <Footer {...footerData /*must use spread operator */} />
           </div>

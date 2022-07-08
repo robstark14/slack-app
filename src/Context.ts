@@ -1,10 +1,11 @@
 import { createContext } from "react";
 
 export interface userInfoInterface {
-  isLoggedIn: boolean;
+  isLoggedIn?: boolean;
   name: string;
   accId: string;
   email: string;
+  password: string;
 }
 export interface footerDataInterface {
   description?: string;
@@ -13,11 +14,11 @@ export interface footerDataInterface {
 
 interface LoginContextInterface {
   userInfo: userInfoInterface;
-  setUserInfo: any;
+  setUserInfo: Function;
 }
 
 const LoginContext = createContext<LoginContextInterface>({
-  userInfo: { isLoggedIn: false, name: "", accId: "", email: "" },
+  userInfo: { isLoggedIn: false, name: "", accId: "", email: "", password: "" },
   setUserInfo: (state: void) => {},
 });
 

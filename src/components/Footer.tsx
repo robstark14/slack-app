@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useId } from "react";
 import { footerDataInterface } from "../Context";
 
 const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
   //Links Component
+  const listId = useId();
   const Links: React.FC = (prop) => {
     const linksElem: any = [];
 
@@ -11,7 +12,11 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
       const LinkList = () => {
         const linkList: any = [];
         label.links.forEach((link, i) => {
-          linkList.push(<a href={label.href[i]}>{link}</a>);
+          linkList.push(
+            <a key={i} href={label.href[i]}>
+              {link}
+            </a>
+          );
         });
         return (
           <ul
@@ -26,7 +31,7 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
         );
       };
       linksElem.push(
-        <div className="mb-6">
+        <div key={listId} className="mb-6">
           <h5 className="uppercase font-bold mb-2.5">{label.title}</h5>
           <LinkList />
         </div>
@@ -34,16 +39,16 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
     });
     return (
       <>
-        <div className="grid grid-flow-col">{linksElem}</div>
+        <div className="grid h-full grid-flow-col w-screen">{linksElem}</div>
       </>
     );
   };
 
   return (
     <>
-      <footer className="text-center bg-gray-900 text-white w-screen mt-10 ">
-        <div className="container px-6 pt-6">
-          <div className="flex justify-center mb-6">
+      <footer className="text-center pt-5 mt-10 grid  h-fit bg-gray-900 w-screen text-white">
+        <div className="w-100 grid justify-center grid-row-3 grid-col-1">
+          <div className="flex justify-center w-screen mb-6">
             <a
               href="#!"
               type="button"
@@ -111,16 +116,18 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
             </a>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 w-screen">
             <p>{props.description} </p>
           </div>
           <Links />
         </div>
         <div
-          className="text-center p-4"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
+          className="text-center h-full py-5 w-screen"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+          }}
         >
-          © 2021 Copyright:
+          <span>© 2021 Copyright: </span>
           <a className="text-white" href="https://slack.app">
             Slack App
           </a>
