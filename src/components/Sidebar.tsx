@@ -1,7 +1,14 @@
-import { useContext, useEffect } from "react";
 import LoginContext from "../Context";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { FC, useEffect, useState, useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { db } from "../config/firebase_config";
+import ChatNav from "./ChatNav";
 
-const SideBar = () => {
+interface Props {
+  channels: object[];
+}
+const SideBar: FC<Props> = ({ channels }) => {
   const loginContext = useContext(LoginContext);
 
   return (
@@ -55,10 +62,18 @@ const SideBar = () => {
         </div>
       </div>
       <div className="text-left w-full p-4 border border-x-transparent border-b-transparent border-t-[#481249]">
-        <h1>Channels</h1>
-        <div className="btn flex items-center">
-          <span className="material-symbols-outlined scale-75 pr-2">lock</span>
-          <span>batch19 </span>
+        <div className="flex justify-between">
+          <h1>Channels</h1>
+          <span className="material-symbols-outlined btn scale-75 pr-2">
+            add
+          </span>
+        </div>
+        <div className="grid">
+          {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
+          <span>batch19 </span> */}
+          {channels.map((channel: any) => (
+            <ChatNav channel={channel} />
+          ))}
         </div>
       </div>
       <div className="btn flex items-center p-4 ">

@@ -14,6 +14,7 @@ import {
   doc,
 } from "firebase/firestore";
 
+import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -33,7 +34,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const db = getFirestore(app);
+
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 export const queryUser: Function = async (login: {
   email: string;
@@ -64,3 +67,5 @@ export const createUser: Function = async (newUser: {
   );
   return await getDocs(find).then((res) => res.docs[0].data());
 };
+
+// const analytics = getAnalytics(app);
