@@ -1,10 +1,30 @@
 import logo from "../logo512.png";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import LoginContext from "../Context";
+import { queryUser } from "../config/firebase_config";
 
 const LoginScreen: React.FC = () => {
   //for userInfo
   const loginContext = useContext(LoginContext);
+
+  interface loginInterface {
+    email?: string;
+    password?: string;
+  }
+  const [loginInput, setLoginInput] = useState<loginInterface>({
+    email: "",
+    password: "",
+  });
+
+  //input states
+
+  //login handler
+  async function handeLogin(): Promise<void> {
+    const result = await queryUser(loginInput);
+    result["isLoggedIn"] = true;
+    loginContext.setUserInfo(result);
+  }
+
   return (
     <>
       <div className="flex-col gap-y-5 flex items-center mt-10 text-white justify-center h-100 md:h-fit w-screen my-4">
@@ -37,13 +57,7 @@ const LoginScreen: React.FC = () => {
           className="md:w-2/5 w-6/12 l:w-1/5 xl:w-1/5"
           onSubmit={(e) => {
             e.preventDefault();
-            const newUserInfo = {
-              name: "roman",
-              isLoggedIn: true,
-              accId: "289y282",
-              email: "roman.cabalum@gmail.com",
-            };
-            loginContext.setUserInfo(newUserInfo);
+            handeLogin();
           }}
         >
           <div className="flex flex-col gap-y-2 justify-center">
@@ -53,6 +67,14 @@ const LoginScreen: React.FC = () => {
                 id="username"
                 type="text"
                 placeholder="name@work-email.com"
+                value={loginInput.email}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setLoginInput((prev) => ({
+                    ...prev,
+                    email: value,
+                  }));
+                }}
               ></input>
             </div>
             <div>
@@ -61,6 +83,14 @@ const LoginScreen: React.FC = () => {
                 id="password"
                 type="password"
                 placeholder="Password"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setLoginInput((prev) => ({
+                    ...prev,
+                    password: value,
+                  }));
+                }}
+                value={loginInput.password}
               ></input>
             </div>
             <button
@@ -68,6 +98,15 @@ const LoginScreen: React.FC = () => {
               className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
             >
               Sign in with email
+            </button>
+            <button
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+              className="bg-gray-900 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
+            >
+              Create an Account
             </button>
           </div>
         </form>

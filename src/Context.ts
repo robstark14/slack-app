@@ -5,6 +5,7 @@ export interface userInfoInterface {
   name: string;
   accId: string;
   email: string;
+  password: string;
 }
 export interface footerDataInterface {
   description?: string;
@@ -17,7 +18,7 @@ interface LoginContextInterface {
 }
 
 const LoginContext = createContext<LoginContextInterface>({
-  userInfo: { isLoggedIn: false, name: "", accId: "", email: "" },
+  userInfo: { isLoggedIn: false, name: "", accId: "", email: "", password: "" },
   setUserInfo: (state: void) => {},
 });
 

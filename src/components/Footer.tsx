@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useId } from "react";
 import { footerDataInterface } from "../Context";
 
 const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
   //Links Component
+  const listId = useId();
   const Links: React.FC = (prop) => {
     const linksElem: any = [];
 
@@ -11,7 +12,11 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
       const LinkList = () => {
         const linkList: any = [];
         label.links.forEach((link, i) => {
-          linkList.push(<a href={label.href[i]}>{link}</a>);
+          linkList.push(
+            <a key={i} href={label.href[i]}>
+              {link}
+            </a>
+          );
         });
         return (
           <ul
@@ -26,7 +31,7 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
         );
       };
       linksElem.push(
-        <div className="mb-6">
+        <div key={listId} className="mb-6">
           <h5 className="uppercase font-bold mb-2.5">{label.title}</h5>
           <LinkList />
         </div>

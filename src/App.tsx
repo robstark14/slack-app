@@ -17,17 +17,19 @@ function App() {
     name: "",
     accId: "",
     email: "",
+    password: "",
   });
 
   const value = { userInfo, setUserInfo };
 
   //see context.ts for footerData
   const footerData: footerDataInterface = {
-    description: "bkjbjbjasbdbasdsadsasa",
+    description:
+      "A React/Firebase app made in fulfillment of AvionSchool's Requirements",
     labels: [
       {
         title: "Links",
-        links: ["link1", "link2"],
+        links: ["Roman", "Rob"],
         href: ["https://google.com", "https://yahoo.com"],
       },
     ],

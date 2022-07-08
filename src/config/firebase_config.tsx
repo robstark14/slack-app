@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getDatabase, ref, get, query, equalTo } from "firebase/database";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -19,3 +21,16 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+export const queryUser: Function = async (login: {
+  email: string;
+  password: string;
+}) => {
+  const dbRef = ref(getDatabase(app), "users");
+  const res = query(dbRef, equalTo(login.email));
+  return await get(res).then((response) => {
+    return response.val().password === login.password
+      ? response.val()
+      : { msg: "failed" };
+  });
+};
