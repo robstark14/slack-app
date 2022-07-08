@@ -3,8 +3,12 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+<<<<<<< HEAD
 import { BrowserRouter as Router } from "react-router-dom";
 
+=======
+import LoginContext from "./Context";
+>>>>>>> a5615e16b5ed021893569a37abba58c6372da0e7
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
