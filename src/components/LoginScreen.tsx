@@ -20,9 +20,17 @@ const LoginScreen: React.FC = () => {
 
   //login handler
   async function handeLogin(): Promise<void> {
-    const result = await queryUser(loginInput);
-    result["isLoggedIn"] = true;
-    loginContext.setUserInfo(result);
+    const result = await queryUser(loginInput).then((data: any) => {
+      if (!data) return;
+      loginContext.setUserInfo({
+        isLoggedIn: true,
+        name: data.name,
+        accId: data.accId,
+        email: data.email,
+        password: data.password,
+      });
+      console.log(data);
+    });
   }
 
   return (

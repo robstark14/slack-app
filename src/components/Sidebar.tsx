@@ -1,6 +1,10 @@
+import { useContext, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import LoginContext from "../Context";
 
 const SideBar = () => {
+  const loginContext = useContext(LoginContext);
+
   return (
     <div className="w-[260px] h-full bg-[#350d36] shadow-lg text-white grid text-left items-center">
       <div className="grid grid-cols-[3fr,1fr,2fr] w-full h-[50px] border border-x-transparent border-y-[#481249] p-4 ">

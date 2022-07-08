@@ -39,7 +39,7 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
     });
     return (
       <>
-        <div className="grid grid-flow-col">{linksElem}</div>
+        <div className="grid grid-flow-col w-screen">{linksElem}</div>
       </>
     );
   };
@@ -47,8 +47,8 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
   return (
     <>
       <footer className="text-center bg-gray-900 text-white w-screen mt-10 ">
-        <div className="container px-6 pt-6">
-          <div className="flex justify-center mb-6">
+        <div className="container flex flex-col align-center justify-center px-6 pt-6 w-screen">
+          <div className="flex justify-center w-screen mb-6">
             <a
               href="#!"
               type="button"
@@ -116,13 +116,13 @@ const Footer: React.FC<footerDataInterface> = (props: footerDataInterface) => {
             </a>
           </div>
 
-          <div className="mb-6">
+          <div className="mb-6 w-screen">
             <p>{props.description} </p>
           </div>
           <Links />
         </div>
         <div
-          className="text-center p-4"
+          className="text-center p-4 w-screen"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.2)" }}
         >
           © 2021 Copyright:

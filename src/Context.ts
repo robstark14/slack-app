@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 export interface userInfoInterface {
-  isLoggedIn: boolean;
+  isLoggedIn?: boolean;
   name: string;
   accId: string;
   email: string;
