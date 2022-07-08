@@ -71,7 +71,7 @@ const SideBar: FC<Props> = ({ channels }) => {
         <div className="grid">
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
-          {channels.map((channel: any) => (
+          {channels.map((channel) => (
             <ChatNav channel={channel} />
           ))}
         </div>
