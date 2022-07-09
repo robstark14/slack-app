@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, SetStateAction, useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/Header";
@@ -6,7 +6,7 @@ import SideBar from "./components/Sidebar";
 import { Routes, Route } from "react-router-dom";
 import ChatPanel from "./components/ChatPanel";
 import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "./config/firebase_config";
+import { auth, db } from "./config/firebase_config";
 import AddChannel from "./components/AddChannel";
 import LoginScreen from "./components/LoginScreen";
 import LoginContext, {
@@ -14,8 +14,11 @@ import LoginContext, {
   userInfoInterface,
 } from "./Context";
 import Footer from "./components/Footer";
+import { ChannelObjects } from "./components/Sidebar";
+import { onAuthStateChanged } from "firebase/auth";
+
 function App() {
-  const [channels, setChannels] = useState<object[]>([]);
+  const [addChannel, setAddChannel] = useState<boolean>(false);
   //state managed by userInfo context provider
   const [userInfo, setUserInfo] = useState<userInfoInterface>({
     isLoggedIn: false,
@@ -24,17 +27,7 @@ function App() {
     email: "",
     password: "",
   });
-
-  useEffect(() => {
-    getAllChannels();
-  }, [channels]);
-  const getAllChannels = () => {
-    onSnapshot(collection(db, "channels"), (snapshot) => {
-      setChannels(
-        snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }))
-      );
-    });
-  };
+  // const [isAuth, setIsAuth] = useState(false);
   const value = { userInfo, setUserInfo };
 
   //see context.ts for footerData
@@ -50,23 +43,38 @@ function App() {
     ],
   };
 
+  // useEffect(() => {
+  //   checkUserAuth();
+  // }, [auth]);
+
+  // const checkUserAuth:Function = () => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user !== null && user !== undefined) {
+  //       setIsAuth(true);
+  //     }
+  //   });
+  // };
+
   return (
     <>
       <LoginContext.Provider value={value}>
         {!userInfo.isLoggedIn && (
           <div className="h-screen bg-gray-700 grid grid-rows-[70%, 30%] overflow-x-hidden grid-cols-1 justify-end items-end">
             <LoginScreen />
-            <Footer {...footerData /*must use spread operator */} />
+            <Footer {...footerData} />
           </div>
         )}
         {userInfo.isLoggedIn && (
-          <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-full ">
+          <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-full w-full ">
             <Header />
-            <SideBar channels={channels} />
-
+            <SideBar setAddChannel={setAddChannel} />
+            {addChannel && <AddChannel setAddChannel={setAddChannel} />}
             <Routes>
-              <Route path="/chatPanel/:panelId" element={<ChatPanel />}></Route>
-              <Route path="/addChannel" element={<AddChannel />}></Route>
+              <Route path="/:panelId" element={<ChatPanel />}></Route>
+              <Route
+                path="/"
+                element={<h1>This is a Slack Clone by Team RoRo</h1>}
+              ></Route>
             </Routes>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { createUser } from "../config/firebase_config";
 import LoginContext from "../Context";
 
@@ -7,6 +8,7 @@ interface propsInterface {
 }
 
 const SignUp = ({ setSignUp }: propsInterface) => {
+  const navigate = useNavigate();
   const loginContext = useContext(LoginContext);
   interface signUpContext {
     name: string;
@@ -39,6 +41,7 @@ const SignUp = ({ setSignUp }: propsInterface) => {
           password: data.password,
         });
       });
+      navigate("/");
     }
   };
 

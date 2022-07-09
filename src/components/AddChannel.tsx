@@ -1,15 +1,27 @@
-import { addDoc, collection } from "firebase/firestore";
-import React, { FC, useState } from "react";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import React, { FC, SetStateAction, useState } from "react";
 import { db } from "../config/firebase_config";
 
-const AddChannel: FC = () => {
-  const [channelName, setChannelName] = useState<string | number>("");
+interface Props {
+  setAddChannel: React.Dispatch<SetStateAction<boolean>>;
+}
+// interface channelDoc{
+//   newChannelDoc: DocumentReference<DocumentData>
+// }
+const AddChannel: FC<Props> = ({ setAddChannel }) => {
+  const [channelName, setChannelName] = useState<string>("");
 
   const addNewChannel = async () => {
     try {
-      await addDoc(collection(db, "channels"), {
+      const newChannelDoc = await addDoc(collection(db, "channels"), {
         name: channelName,
       });
+      console.log(newChannelDoc);
+
+      await addDoc(
+        collection(db, "channels", newChannelDoc.id, "channel-messages"),
+        {}
+      );
     } catch (err: any) {
       console.log(err.message);
     }
@@ -20,7 +32,10 @@ const AddChannel: FC = () => {
         className="grid gap-4"
         onSubmit={(e) => {
           e.preventDefault();
-          addNewChannel();
+          if (channelName) {
+            addNewChannel();
+            setAddChannel(false);
+          }
         }}
       >
         <label htmlFor="channelName">Enter channel name</label>
