@@ -1,9 +1,10 @@
 import logo from "../logo512.png";
 import React, { useContext, useState } from "react";
 import LoginContext from "../Context";
-import { queryUser } from "../config/firebase_config";
+import { auth, provider, queryUser } from "../config/firebase_config";
 import SignUp from "./SignUp";
 import { useNavigate } from "react-router-dom";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 const LoginScreen: React.FC = () => {
   //for userInfo
@@ -37,7 +38,28 @@ const LoginScreen: React.FC = () => {
       navigate("/");
     });
   }
+  const signInWithGoogle: Function = async () => {
+    try {
+      const data = await signInWithPopup(auth, provider);
 
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      const credential = GoogleAuthProvider.credentialFromResult(data);
+      const token = credential?.accessToken;
+      // The signed-in user info.
+      const user = data.user;
+      console.log(user);
+      loginContext.setUserInfo({
+        isLoggedIn: true,
+        name: user.displayName,
+        accId: user.uid,
+        email: user.email,
+        // password: data.password,
+      });
+      // ...
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
   return (
     <>
       <div className="flex-col gap-y-5 flex items-center mt-10 text-white justify-center md:h-fit w-screen my-4">
@@ -52,7 +74,13 @@ const LoginScreen: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-col gap-y-2 w-6/12 md:w-2/5 l:w-1/5 xl:w-1/5">
-          <button className="bg-transparent group flex align-center justify-center group-hover:fill-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+          <button
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+              e.preventDefault();
+              signInWithGoogle();
+            }}
+            className="bg-transparent group flex align-center justify-center group-hover:fill-white hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+          >
             Sign in with Google
             {/* <svg
               xmlns="http://www.w3.org/2000/svg"
