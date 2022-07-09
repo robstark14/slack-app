@@ -1,16 +1,30 @@
 import LoginContext from "../Context";
 import { collection, doc, onSnapshot } from "firebase/firestore";
-import { FC, useEffect, useState, useContext } from "react";
+import { FC, useEffect, useState, useContext, SetStateAction } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { db } from "../config/firebase_config";
 import ChatNav from "./ChatNav";
 
 interface Props {
-  channels: object[];
+  setAddChannel: React.Dispatch<SetStateAction<boolean>>;
 }
-const SideBar: FC<Props> = ({ channels }) => {
+export interface ChannelObjects {
+  name: string;
+  id: string;
+}
+const SideBar: FC<Props> = ({ setAddChannel }) => {
   const loginContext = useContext(LoginContext);
-
+  const [channels, setChannels] = useState<ChannelObjects[]>([]);
+  useEffect(() => {
+    getAllChannels();
+  }, [channels]);
+  const getAllChannels = () => {
+    onSnapshot(collection(db, "channels"), (snapshot) => {
+      setChannels(
+        snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }))
+      );
+    });
+  };
   return (
     <div className="w-[260px] h-full bg-[#350d36] shadow-lg text-white grid text-left items-center">
       <div className="grid grid-cols-[3fr,1fr,2fr] w-full h-[50px] border border-x-transparent border-y-[#481249] p-4 ">
@@ -64,7 +78,12 @@ const SideBar: FC<Props> = ({ channels }) => {
       <div className="text-left w-full p-4 border border-x-transparent border-b-transparent border-t-[#481249]">
         <div className="flex justify-between">
           <h1>Channels</h1>
-          <span className="material-symbols-outlined btn scale-75 pr-2">
+          <span
+            className="material-symbols-outlined btn scale-75 pr-2"
+            onClick={() => {
+              setAddChannel(true);
+            }}
+          >
             add
           </span>
         </div>
@@ -72,7 +91,7 @@ const SideBar: FC<Props> = ({ channels }) => {
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
           {channels.map((channel) => (
-            <ChatNav channel={channel} />
+            <ChatNav name={channel.name} id={channel.id} />
           ))}
         </div>
       </div>

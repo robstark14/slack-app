@@ -10,7 +10,7 @@ body {
   padding: 0;
   height: 100vh;
   width: 100vw;
-  @apply bg-gray-600;
+  /* @apply bg-gray-600; */
 }
 
 .btn {

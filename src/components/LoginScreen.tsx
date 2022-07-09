@@ -3,11 +3,12 @@ import React, { useContext, useState } from "react";
 import LoginContext from "../Context";
 import { queryUser } from "../config/firebase_config";
 import SignUp from "./SignUp";
+import { useNavigate } from "react-router-dom";
 
 const LoginScreen: React.FC = () => {
   //for userInfo
   const loginContext = useContext(LoginContext);
-
+  const navigate = useNavigate();
   interface loginInterface {
     email?: string;
     password?: string;
@@ -33,6 +34,7 @@ const LoginScreen: React.FC = () => {
         password: data.password,
       });
       console.log(data);
+      navigate("/");
     });
   }
 
