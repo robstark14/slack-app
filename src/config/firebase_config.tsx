@@ -5,7 +5,6 @@ import { getAnalytics } from "firebase/analytics";
 import {
   collection,
   getFirestore,
-  getDoc,
   query,
   where,
   limit,
@@ -37,7 +36,9 @@ const analytics = getAnalytics(app);
 
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
 export const provider = new GoogleAuthProvider();
+
 export const queryUser: Function = async (login: {
   email: string;
   password: string;
@@ -46,6 +47,7 @@ export const queryUser: Function = async (login: {
   const req = query(users, where("email", "==", login.email), limit(1));
   return await getDocs(req).then((res) => res.docs[0].data());
 };
+
 export const createUser: Function = async (newUser: {
   email: string;
   name: string;

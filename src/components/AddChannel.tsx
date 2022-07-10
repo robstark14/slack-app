@@ -1,6 +1,21 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import React, { FC, SetStateAction, useState } from "react";
+import {
+  addDoc,
+  collection,
+  doc,
+  setDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import React, {
+  FC,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { db } from "../config/firebase_config";
+import LoginContext from "../Context";
 
 interface Props {
   setAddChannel: React.Dispatch<SetStateAction<boolean>>;
@@ -9,12 +24,36 @@ interface Props {
 //   newChannelDoc: DocumentReference<DocumentData>
 // }
 const AddChannel: FC<Props> = ({ setAddChannel }) => {
+  let memberQueryResults = [];
+  const userContext = useContext(LoginContext);
+
   const [channelName, setChannelName] = useState<string>("");
+  const membersArr: string[] = [userContext.userInfo.accId];
+  const [memberInput, setMemberInput] = useState<string>("");
+
+  useEffect(() => {
+    const debounceFn = setTimeout(async () => {
+      if (memberInput === "") return;
+      memberQueryResults = [];
+      const users = collection(db, "users");
+      const req = query(users, where("name", "==", memberInput));
+      await getDocs(req).then((res) =>
+        res.docs.forEach((doc) => {
+          memberQueryResults.push(doc.data());
+          console.log(doc.data());
+        })
+      );
+    }, 1000);
+    return () => {
+      clearTimeout(debounceFn);
+    };
+  }, [memberInput]);
 
   const addNewChannel = async () => {
     try {
       const newChannelDoc = await addDoc(collection(db, "channels"), {
         name: channelName,
+        members: membersArr,
       });
       console.log(newChannelDoc);
 
@@ -47,6 +86,17 @@ const AddChannel: FC<Props> = ({ setAddChannel }) => {
             setChannelName(e.target.value);
           }}
         />
+        <label htmlFor="memberInput">Enter channel name</label>
+        <input
+          id="memberInput"
+          className="w-full"
+          type="text"
+          value={memberInput}
+          onChange={(e) => {
+            setMemberInput(e.target.value);
+          }}
+        />
+
         <button className="rounded bg-[#481249] p-1 text-white" type="submit">
           Add Channel
         </button>
