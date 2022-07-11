@@ -1,5 +1,4 @@
 import React, { FC, SetStateAction, useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import Header from "./components/Header";
 import SideBar from "./components/Sidebar";
@@ -65,7 +64,7 @@ function App() {
           </div>
         )}
         {userInfo.isLoggedIn && (
-          <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-full w-full ">
+          <div className="grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-full ">
             <Header />
             <SideBar setAddChannel={setAddChannel} />
             {addChannel && <AddChannel setAddChannel={setAddChannel} />}
