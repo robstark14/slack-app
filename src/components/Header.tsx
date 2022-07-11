@@ -19,9 +19,9 @@ const Header: React.FC = () => {
       <div className="flex items-center w-[90%]">
         <input
           type="text"
-          className="w-[90%] h-2/3 bg-white opacity-30 rounded focus:outline-none self-center text-white p-2"
-          placeholder={`Search channel`}
-        />
+          className="w-[90%] h-2/3 bg-white opacity-30 rounded text-black focus:outline-none self-center text-white p-2"
+          placeholder="Search User"
+        ></input>
         <span className="btn material-symbols-outlined text-white text-right relative right-[50px]">
           tune
         </span>
@@ -29,16 +29,7 @@ const Header: React.FC = () => {
           search
         </span>
       </div>
-      <div className="flex items-center justify-end w-full pr-4">
-        <span className="btn material-symbols-outlined text-white pr-4 scale-75">
-          help
-        </span>
-        <img
-          src={sample}
-          alt="profile picture"
-          className="btn w-[25px] rounded"
-        />
-      </div>
+
       {recentModal && (
         <div className="absolute top-8 left-[250px] h-max w-[320px] bg-stone-100 rounded p-4 shadow-md">
           <small className="opacity-50">Recent</small>
