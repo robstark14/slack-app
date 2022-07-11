@@ -22,7 +22,7 @@ export default function ChatMessages({
       />
       <div>
         <span className="font-bold mr-2">{user}</span>
-        <span className="text-[13px] opacity-50">
+        <span className="text-[13px] text-stone-400">
           {new Date(timestamp?.toDate()).toLocaleTimeString()}
         </span>
         <p>{message}</p>

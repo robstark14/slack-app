@@ -6,6 +6,7 @@ import {
   query,
   where,
   getDocs,
+  serverTimestamp,
 } from "firebase/firestore";
 import React, {
   FC,
@@ -77,6 +78,7 @@ const AddChannel: FC<Props> = ({ setAddChannel }) => {
       const newChannelDoc = await addDoc(collection(db, "channels"), {
         name: channelName,
         members: membersArr,
+        channelCreation: serverTimestamp(),
       });
       console.log(newChannelDoc);
 
