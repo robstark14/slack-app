@@ -14,10 +14,13 @@ export default function ChatMessages({
   timestamp,
 }: Props) {
   return (
-    <div className="w-full h-max flex items-center text-left p-4 text-[15px]">
+    <div
+      className="w-full flex items-center text-left p-4 text-[15px]"
+      key={timestamp}
+    >
       <img
         src={userImage}
-        alt="user image"
+        alt="img"
         className="w-[36px] h-[36px] object-contain mr-2 rounded-md"
       />
       <div>

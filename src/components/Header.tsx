@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import sample from "../sample.jpg";
-import useOnOutsideClick from "./useOnOutsideClick";
+
 const Header: React.FC = () => {
   const [recentModal, setRecentModal] = useState<boolean>(false);
   const ref = useRef();
 
-  useOnOutsideClick(ref, () => setRecentModal(false));
   return (
-    <div className="w-full h-full bg-[#350d36] shadow-sm grid grid-cols-[1.85fr,7fr,1fr] gap-2 col-span-2">
+    <div className="w-full h-full bg-gray-900 shadow-sm grid grid-cols-[1.85fr,7fr,1fr] gap-2 col-span-2">
       <span
         className="btn material-symbols-outlined text-white self-center text-right"
         onClick={() => {
