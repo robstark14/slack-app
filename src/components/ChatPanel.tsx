@@ -97,7 +97,12 @@ const ChatPanel: FC = () => {
     const chat = targetChat;
     const { scrollX, scrollY } = window;
     window.scrollTo(scrollX, scrollY);
-    chat?.current?.scrollIntoView(true);
+    chat?.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "start",
+    });
+    setTimeout(() => window.scrollTo(0, 0), 0);
   };
   const getChannelMessages: Function = () => {
     if (panelId) {
@@ -301,7 +306,7 @@ const ChatPanel: FC = () => {
           timestamp={msg?.timestamp}
         />
       ))}
-      <div className="overflow-y-scroll h-[60%]">
+      <div className="overflow-y-scroll h-[60%] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
         {allDirectMessages?.map((msg) => (
           <ChatMessages
             user={msg.from}

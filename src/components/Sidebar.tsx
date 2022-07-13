@@ -111,8 +111,16 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
         </span>
       </div>
       {isNewMessage && (
-        <div className="bg-black absolute top-0 left-0 w-screen h-screen opacity-80 z-10">
-          <div className="relative top-[20%] left-1/3 h-[300px] w-[320px] md:w-[500px] bg-stone-100 rounded shadow-md grid text-left text-black p-8">
+        <div
+          className="bg-black absolute top-0 left-0 w-screen h-screen opacity-90 z-10"
+          onClick={(e) => {
+            e.preventDefault();
+            if (e.target === e.currentTarget) {
+              setIsNewMessage((prev) => !prev);
+            }
+          }}
+        >
+          <div className="relative top-[20%] left-[40%] h-[300px] w-[300px]  bg-stone-100 rounded shadow-md grid text-left text-black p-8 opacity-100">
             <div
               className="absolute right-0 top-0  w-8 h-8 rounded-full btn"
               onClick={() => {
@@ -121,19 +129,25 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
             >
               <h1 className="text-center  text-[16px] text-black">x</h1>
             </div>
-            <h1 className="font-bold">New Message to</h1>
-            <ul>
+            <h1 className="font-bold">Send new message to</h1>
+            <ul className="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
               {users?.map((user: any) => (
-                <li
-                  className="hover:bg-gray-800 hover:text-white btn"
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setDirectMessageToDb();
-                    setIsNewMessage(false);
-                  }}
-                >
-                  {user?.name}
-                </li>
+                <div className="flex items-center hover:bg-gray-800 hover:text-white btn">
+                  <img
+                    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                    alt=""
+                    className="w-[20px] h-[20px] mr-4"
+                  />
+                  <li
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setDirectMessageToDb();
+                      setIsNewMessage(false);
+                    }}
+                  >
+                    {user?.name}
+                  </li>
+                </div>
               ))}
             </ul>
           </div>
@@ -151,7 +165,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
             add
           </span>
         </div>
-        <div className="grid">
+        <div className="grid h-[150px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
           {channels.map((channel) => (
@@ -170,7 +184,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
           <span className="material-symbols-outlined">navigate_next </span>
           <h1>Direct messages</h1>
         </div>
-        <div className="text-white w-full grid text-left">
+        <div className="text-white w-full grid text-left h-[90%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
           {directMessagesNav?.map((dm: any) => {
             return (
               <div className="px-2">
