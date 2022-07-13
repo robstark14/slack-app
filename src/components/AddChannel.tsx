@@ -25,23 +25,23 @@ interface Props {
 // interface channelDoc{
 //   newChannelDoc: DocumentReference<DocumentData>
 // }
+export interface memberArrInterface {
+  name?: string;
+  accId?: string;
+  email?: string;
+  password?: string;
+}
 const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
-  interface memberArrInterface {
-    name?: string;
-    accId?: string;
-    email?: string;
-    password?: string;
-  }
-
   const [memeberQueryResults, setQueryResults] = useState<any>([]);
   const userContext = useContext(LoginContext);
 
   const [channelName, setChannelName] = useState<string>("");
-  const [membersArr, setMembersArr] = useState<memberArrInterface[]>([]);
+  const [membersArr, setMembersArr] = useState<memberArrInterface[]>([
+    userContext.userInfo,
+  ]);
   const [memberInput, setMemberInput] = useState<string>("");
 
   useEffect(() => {
-    setMembersArr([userContext.userInfo]);
     const debounceFn = setTimeout(async () => {
       setQueryResults([]);
       if (memberInput === "") return;
@@ -58,15 +58,15 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     return () => {
       clearTimeout(debounceFn);
     };
-  }, [memberInput]);
+  }, [memberInput, membersArr]);
 
   const AddedMembers = ({ members }: { members: memberArrInterface[] }) => {
     const addedMemKeys = useId();
     const returnArr: any = [];
-    members.forEach((member) => {
+    members.map((member) => {
       returnArr.push(
         <div key={addedMemKeys}>
-          <span>{member.name}</span>
+          <span key={addedMemKeys}>{member.name}</span>
         </div>
       );
     });
@@ -77,7 +77,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     try {
       const newChannelDoc = await addDoc(collection(db, "channels"), {
         name: channelName,
-        members: membersArr,
+        members: membersArr.map((member) => member.accId),
         channelCreation: serverTimestamp(),
       });
       console.log(newChannelDoc);
@@ -99,6 +99,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
         e.preventDefault();
         if (e.target === e.currentTarget) {
           setAddChannel((prev) => !prev);
+          setMembersArr([userContext.userInfo]);
         }
       }}
     >
@@ -110,10 +111,6 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
           className="grid gap-4"
           onSubmit={(e) => {
             e.preventDefault();
-            if (channelName && membersArr.length > 0) {
-              addNewChannel();
-              setAddChannel(false);
-            }
           }}
         >
           <label htmlFor="channelName">Enter channel name</label>
@@ -143,16 +140,24 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
               }}
             />
             <div
-              className={`absolute mt-1 hover:bg-slate-50 flex gap-x-2 z-10 bg-white h-fit w-3/12 p-2 border-black shadow-md ${
-                memeberQueryResults.length === 0 ? "invisible" : "visible"
+              className={`absolute mt-1 hover:bg-slate-50 gap-x-2 z-10 bg-white h-fit w-3/12 p-2 border-black shadow-md ${
+                memeberQueryResults.length === 0 ? "hidden" : "flex"
               }`}
             >
-              <MemberSearchPanel members={memeberQueryResults} />
+              <MemberSearchPanel
+                membersQuery={memeberQueryResults}
+                setMembersArr={setMembersArr}
+                membersArr={membersArr}
+                setMembersInput={setMemberInput}
+              />
             </div>
           </div>
           <button
             className="rounded bg-[#481249] z-0 p-1 text-white"
-            type="submit"
+            onClick={() => {
+              addNewChannel();
+              setAddChannel(false);
+            }}
           >
             Add Channel
           </button>
