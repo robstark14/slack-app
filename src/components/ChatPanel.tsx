@@ -217,7 +217,7 @@ const ChatPanel: FC = () => {
               </span>
             </div>
             <form
-              className="absolute bottom-0 mb-8 border border-gray w:[400px] md:w-[450px] rounded-lg h-[70px] flex"
+              className="absolute bottom-0 mb-8 border border-gray w:[400px] md:w-[450px] rounded-lg h-[70px] flex  items-end"
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 if (directMessage) {
@@ -239,7 +239,7 @@ const ChatPanel: FC = () => {
               />
               <button
                 type="submit"
-                className="scale-125 mr-4 bg-gray-900 h-full w-full"
+                className="mr-4 bg-gray-900 h-[80%] w-[50px]"
               >
                 <span className="material-symbols-outlined text-center text-gray-500">
                   send
