@@ -5,6 +5,10 @@ import {
   where,
   getDocs,
   serverTimestamp,
+  orderBy,
+  onSnapshot,
+  setDoc,
+  doc,
 } from "firebase/firestore";
 import React, {
   FC,
@@ -40,6 +44,11 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     userContext.userInfo,
   ]);
   const [memberInput, setMemberInput] = useState<string>("");
+  const [isNewChannel, setIsNewChannel] = useState<boolean>(false);
+  const loginContext = useContext(LoginContext);
+  const { userInfo, setUserInfo } = loginContext;
+  const [addedUser, setAddedUser] = useState<any>(null);
+  const [displayUsers, setdisplayUsers] = useState<boolean>(false);
 
   useEffect(() => {
     const debounceFn = setTimeout(async () => {
@@ -60,6 +69,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     };
   }, [memberInput, membersArr]);
 
+  const returnArr: any = [];
   const AddedMembers = ({ members }: { members: memberArrInterface[] }) => {
     const addedMemKeys = useId();
     const returnArr: any = [];
@@ -87,10 +97,35 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
         collection(db, "channels", newChannelDoc.id, "channel-messages"),
         {}
       );
+
+      addUserToChannel(newChannelDoc.id);
     } catch (err: any) {
       console.log(err.message);
     }
   };
+
+  const addUserToChannel: Function = async (channelId: string) => {
+    try {
+      // await setDoc(
+      //   doc(db, "channels", channelId),
+      //   {
+      //     userName: selectedUser.name,
+      //     userId: selectedUser.accId,
+      //     userImage: "",
+      //     timestamp: serverTimestamp(),
+      //   }
+      // );
+      const q = query(
+        collection(db, "users"),
+        where("accId", "==", addedUser.id)
+      );
+      onSnapshot(q, (snapshot: any) => membersArr.push(snapshot.doc.data()));
+      // console.log(directMsg);
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div
       className={`bg-black bg-opacity-25 h-full w-full flex items-center z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${

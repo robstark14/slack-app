@@ -96,7 +96,7 @@ const ChatPanel: FC = () => {
     }
     getChannelMessages();
     getdirectMessages();
-    // scrollDown();
+    scrollDown();
     // return () => scrollDown();
   }, [panelId]);
   const targetChat = useRef<HTMLDivElement | null>(null);
@@ -286,7 +286,7 @@ const ChatPanel: FC = () => {
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 if (directMessage) {
-                  // scrollDown();
+                  scrollDown();
                   addMessage();
                   getChannelMessages();
                   console.log(directMessage);
@@ -369,7 +369,7 @@ const ChatPanel: FC = () => {
         {allDirectMessages?.map((msg) => (
           <ChatMessages
             user={msg.from}
-            userImage=""
+            userImage="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
             message={msg?.message}
             timestamp={msg?.timestamp}
           />
