@@ -15,14 +15,14 @@ const ChatNav: FC<Props> = ({ name, id }) => {
     }
   };
   return (
-    <div>
+    <div className="w-full">
       <p
         onClick={() => {
           openChannel();
         }}
-        className="btn"
+        className="text-left hover:bg-gray-300 hover:text-black py-1 px-2 w-full"
       >
-        # {name}
+        {name}
       </p>
     </div>
   );
