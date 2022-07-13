@@ -21,6 +21,7 @@ interface Props {
 export interface ChannelObjects {
   name: string;
   id: string;
+  members: string[];
 }
 interface Users {
   name: string;
@@ -45,7 +46,11 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
   const getAllChannels: Function = () => {
     onSnapshot(collection(db, "channels"), (snapshot) => {
       setChannels(
-        snapshot.docs.map((doc) => ({ id: doc.id, name: doc.data().name }))
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name,
+          members: doc.data().members,
+        }))
       );
     });
   };
@@ -154,11 +159,15 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
         <div className="grid">
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
-          {channels.map((channel) => (
-            <div className="flex items-center hover:bg-gray-300 hover:text-black btn px-4 py-0">
-              #<ChatNav name={channel.name} id={channel.id} />
-            </div>
-          ))}
+          {channels.map((channel) => {
+            if (channel.members.includes(loginContext.userInfo.accId)) {
+              return (
+                <div className="flex items-center hover:bg-gray-300 hover:text-black btn px-4 py-0">
+                  #<ChatNav name={channel.name} id={channel.id} />
+                </div>
+              );
+            }
+          })}
         </div>
       </div>
       <div className="btn flex items-center p-4 ">

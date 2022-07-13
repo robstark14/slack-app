@@ -27,15 +27,16 @@ const LoginScreen: React.FC = () => {
   async function handeLogin(): Promise<void> {
     await queryUser(loginInput).then((data: any) => {
       if (!data) return;
-      loginContext.setUserInfo({
-        isLoggedIn: true,
-        name: data.name,
-        accId: data.accId,
-        email: data.email,
-        password: data.password,
-      });
-      console.log(data);
-      navigate("/");
+      if (data.password === loginInput.password) {
+        loginContext.setUserInfo({
+          isLoggedIn: true,
+          name: data.name,
+          accId: data.accId,
+          email: data.email,
+          password: data.password,
+        });
+        navigate("/");
+      }
     });
   }
   const signInWithGoogle: Function = async () => {

@@ -79,6 +79,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
         name: channelName,
         members: membersArr.map((member) => member.accId),
         channelCreation: serverTimestamp(),
+        channelCreator: userContext.userInfo.name,
       });
       console.log(newChannelDoc);
 
@@ -148,6 +149,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
                 membersQuery={memeberQueryResults}
                 setMembersArr={setMembersArr}
                 membersArr={membersArr}
+                channelName={channelName}
                 setMembersInput={setMemberInput}
               />
             </div>
@@ -155,7 +157,9 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
           <button
             className="rounded bg-[#481249] z-0 p-1 text-white"
             onClick={() => {
+              if (!channelName && membersArr.length < 2) return;
               addNewChannel();
+              setMembersArr([userContext.userInfo]);
               setAddChannel(false);
             }}
           >

@@ -64,7 +64,7 @@ function App() {
           </div>
         )}
         {userInfo.isLoggedIn && (
-          <div className="overflow-hidden grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-screen ">
+          <div className="overflow-hidden grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-100 w-screen ">
             <Header />
             <SideBar setAddChannel={setAddChannel} />
             <AddChannel setAddChannel={setAddChannel} addChannel={addChannel} />
