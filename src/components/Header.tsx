@@ -19,7 +19,7 @@ const Header: React.FC = () => {
       <div className="flex items-center w-[90%]">
         <input
           type="text"
-          className="w-[90%] h-2/3 bg-white opacity-30 rounded text-black focus:outline-none self-center text-white p-2"
+          className="w-[90%] h-2/3 opacity-30 rounded text-black focus:outline-none self-center p-2"
           placeholder="Search User"
         ></input>
         <span className="btn material-symbols-outlined text-white text-right relative right-[50px]">

@@ -26,23 +26,24 @@ interface Props {
 // }
 const AddChannel: FC<Props> = ({ setAddChannel }) => {
   interface memberArrInterface {
-    name: string;
-    accId: string;
-    email: string;
-    password: string;
+    name?: string;
+    accId?: string;
+    email?: string;
+    password?: string;
   }
 
   const [memeberQueryResults, setQueryResults] = useState<any>([]);
   const userContext = useContext(LoginContext);
 
   const [channelName, setChannelName] = useState<string>("");
-  const membersArr: memberArrInterface[] = [userContext.userInfo];
+  const [membersArr, setMembersArr] = useState<memberArrInterface[]>([]);
   const [memberInput, setMemberInput] = useState<string>("");
 
   useEffect(() => {
+    setMembersArr([userContext.userInfo]);
     const debounceFn = setTimeout(async () => {
-      if (memberInput === "") return;
       setQueryResults([]);
+      if (memberInput === "") return;
       const users = collection(db, "users");
       const req = query(users, where("name", "==", memberInput));
       await getDocs(req).then((res) =>
@@ -115,19 +116,29 @@ const AddChannel: FC<Props> = ({ setAddChannel }) => {
             <AddedMembers members={membersArr} />
           </div>
         </div>
-        <label htmlFor="memberInput">Add a member</label>
-        <input
-          id="memberInput"
-          className="w-full"
-          type="text"
-          value={memberInput}
-          onChange={(e) => {
-            setMemberInput(e.target.value);
-          }}
-        />
-        <MemberSearchPanel members={memeberQueryResults} />
-
-        <button className="rounded bg-[#481249] p-1 text-white" type="submit">
+        <div>
+          <label htmlFor="memberInput">Add a member</label>
+          <input
+            id="memberInput"
+            className="w-full"
+            type="text"
+            value={memberInput}
+            onChange={(e) => {
+              setMemberInput(e.target.value);
+            }}
+          />
+          <div
+            className={`absolute mt-1 hover:bg-slate-50 flex gap-x-2 z-10 bg-white h-fit w-10/12 p-2 border-black shadow-md ${
+              memeberQueryResults.length === 0 ? "invisible" : "visible"
+            }`}
+          >
+            <MemberSearchPanel members={memeberQueryResults} />
+          </div>
+        </div>
+        <button
+          className="rounded bg-[#481249] z-0 p-1 text-white"
+          type="submit"
+        >
           Add Channel
         </button>
       </form>
