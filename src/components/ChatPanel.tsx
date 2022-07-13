@@ -89,7 +89,7 @@ const ChatPanel: FC = () => {
     }
     getChannelMessages();
     getdirectMessages();
-    // scrollDown();
+    scrollDown();
     // return () => scrollDown();
   }, [panelId]);
   const targetChat = useRef<HTMLDivElement | null>(null);
@@ -182,9 +182,10 @@ const ChatPanel: FC = () => {
         ),
         orderBy("timestamp")
       );
-      onSnapshot(q, (snapshot: any) =>
-        setAllDirectMessages(snapshot.docs.map((doc: any) => doc.data()))
-      );
+      onSnapshot(q, (snapshot: any) => {
+        setAllDirectMessages(snapshot.docs.map((doc: any) => doc.data()));
+        scrollDown();
+      });
       console.log(allDirectMessages);
     }
   };
@@ -216,11 +217,11 @@ const ChatPanel: FC = () => {
               </span>
             </div>
             <form
-              className="absolute bottom-0 mb-8 border border-gray w:[400px] md:w-[450px] rounded-lg h-[70px] flex  items-end"
+              className="absolute bottom-0 mb-8 border border-gray w:[400px] md:w-[450px] rounded-lg h-[70px] flex"
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 if (directMessage) {
-                  // scrollDown();
+                  scrollDown();
                   addMessage();
                   getChannelMessages();
                   console.log(directMessage);
@@ -236,7 +237,10 @@ const ChatPanel: FC = () => {
                   setDirectMessage(e.target.value)
                 }
               />
-              <button type="submit" className="scale-125 mr-4">
+              <button
+                type="submit"
+                className="scale-125 mr-4 bg-gray-900 h-full w-full"
+              >
                 <span className="material-symbols-outlined text-center text-gray-500">
                   send
                 </span>
@@ -301,7 +305,7 @@ const ChatPanel: FC = () => {
         {allDirectMessages?.map((msg) => (
           <ChatMessages
             user={msg.from}
-            userImage=""
+            userImage="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
             message={msg?.message}
             timestamp={msg?.timestamp}
           />
