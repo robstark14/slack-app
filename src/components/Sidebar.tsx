@@ -145,7 +145,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
           <span
             className="material-symbols-outlined btn scale-75 pr-2"
             onClick={() => {
-              setAddChannel(true);
+              setAddChannel((prev) => !prev);
             }}
           >
             add

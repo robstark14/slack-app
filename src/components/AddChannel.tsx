@@ -20,11 +20,12 @@ import MemberSearchPanel from "./memberSearchPanel";
 
 interface Props {
   setAddChannel: React.Dispatch<SetStateAction<boolean>>;
+  addChannel: boolean;
 }
 // interface channelDoc{
 //   newChannelDoc: DocumentReference<DocumentData>
 // }
-const AddChannel: FC<Props> = ({ setAddChannel }) => {
+const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
   interface memberArrInterface {
     name?: string;
     accId?: string;
@@ -90,58 +91,73 @@ const AddChannel: FC<Props> = ({ setAddChannel }) => {
     }
   };
   return (
-    <div className="relative w-fit bg-stone-200 rounded-lg p-4 shadow-md m-auto">
-      <form
-        className="grid gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (channelName) {
-            addNewChannel();
-            setAddChannel(false);
-          }
-        }}
+    <div
+      className={`bg-black bg-opacity-25 h-full w-full flex items-center z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
+        !addChannel && "hidden"
+      }`}
+      onClick={(e) => {
+        e.preventDefault();
+        if (e.target === e.currentTarget) {
+          setAddChannel((prev) => !prev);
+        }
+      }}
+    >
+      <div
+        className={`${addChannel === false ? "hidden " : ""}
+ bg-stone-200 rounded-lg p-4 shadow-xl m-auto z-50 h-fit w-fit `}
       >
-        <label htmlFor="channelName">Enter channel name</label>
-        <input
-          className="w-full"
-          type="text"
-          value={channelName}
-          onChange={(e) => {
-            setChannelName(e.target.value);
+        <form
+          className="grid gap-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (channelName && membersArr.length > 0) {
+              addNewChannel();
+              setAddChannel(false);
+            }
           }}
-        />
-        <div>
-          <p>Members:</p>
-          <div className="flex gap-x-2">
-            <AddedMembers members={membersArr} />
-          </div>
-        </div>
-        <div>
-          <label htmlFor="memberInput">Add a member</label>
+        >
+          <label htmlFor="channelName">Enter channel name</label>
           <input
-            id="memberInput"
             className="w-full"
             type="text"
-            value={memberInput}
+            value={channelName}
             onChange={(e) => {
-              setMemberInput(e.target.value);
+              setChannelName(e.target.value);
             }}
           />
-          <div
-            className={`absolute mt-1 hover:bg-slate-50 flex gap-x-2 z-10 bg-white h-fit w-10/12 p-2 border-black shadow-md ${
-              memeberQueryResults.length === 0 ? "invisible" : "visible"
-            }`}
-          >
-            <MemberSearchPanel members={memeberQueryResults} />
+          <div>
+            <p>Members:</p>
+            <div className="flex gap-x-2">
+              <AddedMembers members={membersArr} />
+            </div>
           </div>
-        </div>
-        <button
-          className="rounded bg-[#481249] z-0 p-1 text-white"
-          type="submit"
-        >
-          Add Channel
-        </button>
-      </form>
+          <div>
+            <label htmlFor="memberInput">Add a member</label>
+            <input
+              id="memberInput"
+              className="w-full"
+              type="text"
+              value={memberInput}
+              onChange={(e) => {
+                setMemberInput(e.target.value);
+              }}
+            />
+            <div
+              className={`absolute mt-1 hover:bg-slate-50 flex gap-x-2 z-10 bg-white h-fit w-3/12 p-2 border-black shadow-md ${
+                memeberQueryResults.length === 0 ? "invisible" : "visible"
+              }`}
+            >
+              <MemberSearchPanel members={memeberQueryResults} />
+            </div>
+          </div>
+          <button
+            className="rounded bg-[#481249] z-0 p-1 text-white"
+            type="submit"
+          >
+            Add Channel
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

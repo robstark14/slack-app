@@ -7,10 +7,10 @@ const MemberSearchPanel = ({
   const returnArr: any = [];
   members.forEach((member) => {
     returnArr.push(
-      <>
+      <div className="flex flex-col border-b-2 w-fit h-fit">
         <span>{member.name}</span>
         <span>{member.email}</span>
-      </>
+      </div>
     );
   });
   return <>{returnArr}</>;
