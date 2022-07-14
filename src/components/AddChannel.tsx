@@ -6,6 +6,7 @@ import {
   getDocs,
   serverTimestamp,
   onSnapshot,
+  limit,
 } from "firebase/firestore";
 import React, {
   FC,
@@ -53,7 +54,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
       if (memberInput === "") return;
       const newData: any = [];
       const users = collection(db, "users");
-      const req = query(users, where("name", ">=", memberInput));
+      const req = query(users, where("name", ">=", memberInput), limit(1));
       await getDocs(req)
         .then((res) =>
           res.docs.forEach((doc) => {
