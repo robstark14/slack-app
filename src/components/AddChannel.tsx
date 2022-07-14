@@ -5,10 +5,7 @@ import {
   where,
   getDocs,
   serverTimestamp,
-  orderBy,
   onSnapshot,
-  setDoc,
-  doc,
 } from "firebase/firestore";
 import React, {
   FC,
@@ -69,7 +66,6 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     };
   }, [memberInput, membersArr]);
 
-  const returnArr: any = [];
   const AddedMembers = ({ members }: { members: memberArrInterface[] }) => {
     const addedMemKeys = useId();
     const returnArr: any = [];
@@ -125,7 +121,6 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
       console.log(err.message);
     }
   };
-
   return (
     <div
       className={`bg-black bg-opacity-25 h-full w-full flex items-center z-10 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 ${
