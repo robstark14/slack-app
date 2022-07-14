@@ -55,6 +55,18 @@ const Header: React.FC = () => {
       console.log(err.message);
     }
   };
+
+  const handleLogout = () => {
+    setUserInfo({
+      isLoggedIn: false,
+      name: "",
+      accId: "",
+      email: "",
+      password: "",
+    });
+    window.localStorage.clear();
+    window.location.reload();
+  };
   return (
     <div className="w-full h-full bg-gray-900 shadow-sm grid grid-cols-[1.85fr,7fr,1fr] gap-2 col-span-2">
       <div></div>
@@ -66,7 +78,7 @@ const Header: React.FC = () => {
       >
         <input
           type="text"
-          className="w-[90%] h-2/3 bg-white opacity-30 rounded focus:outline-none self-center text-black p-2"
+          className="w-[90%] h-2/3 opacity-30 rounded text-black focus:outline-none self-center p-2"
           placeholder="Search User"
           value={searchUser}
           onChange={(e) => {
@@ -94,6 +106,15 @@ const Header: React.FC = () => {
           </div>
         ))}
       </form>
+      <div
+        className="flex items-center gap-x-2 group hover:cursor-pointer "
+        onClick={handleLogout}
+      >
+        <span className="text-white group-hover:text-red-600">Logout </span>
+        <span className=" material-symbols-outlined text-white group-hover:text-red-600">
+          logout
+        </span>
+      </div>
     </div>
   );
 };

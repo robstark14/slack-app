@@ -13,6 +13,8 @@ import {
   setDoc,
   updateDoc,
   where,
+  getDocs,
+  limit,
 } from "firebase/firestore";
 
 import React, {
@@ -24,7 +26,7 @@ import React, {
   useState,
 } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../config/firebase_config";
+import { db, queryUser } from "../config/firebase_config";
 import ChatMessages from "./ChatMessages";
 import newMessageCountContext from "../NewMessageCountContext";
 
@@ -46,11 +48,9 @@ interface ChannelMessages {
 }
 interface ChannelDetails {
   name: string;
-  email: string;
   channelCreation: any;
   channelCreator: string;
   members: object[];
-  seconds: number;
 }
 interface UserDetails {
   userName: string;
@@ -77,7 +77,10 @@ const ChatPanel: FC = () => {
   const [allDirectMessages, setAllDirectMessages] = useState<
     AllDirectMessages[]
   >([]);
+
+  const [channelMembers, setChannelMembers] = useState<string[]>([]);
   const [channelMessages, setChannelMessages] = useState<ChannelMessages[]>([]);
+  const [channelMessengeInput, setChannelMessageInput] = useState<string>("");
   const loginContext = useContext(LoginContext);
   const { userInfo, setUserInfo } = loginContext;
   const { newMessageCount, setNewMessageCount } = useContext(
@@ -85,10 +88,14 @@ const ChatPanel: FC = () => {
   );
   const [newMessagesArr, setNewMessagesArr] = useState<any>([]);
   useEffect(() => {
+    scrollDown();
     if (panelId) {
-      onSnapshot(doc(db, "channels", panelId), (snapshot: any) =>
-        setChannelDetails(snapshot.data())
-      );
+      onSnapshot(doc(db, "channels", panelId), (snapshot: any) => {
+        console.log(snapshot.data());
+        setChannelDetails(snapshot.data());
+        getChannelMembers();
+      });
+
       onSnapshot(
         doc(db, "users", userInfo.accId, "messages", panelId),
         (snapshot: any) => setUserDetails(snapshot.data())
@@ -126,6 +133,38 @@ const ChatPanel: FC = () => {
       );
     }
   };
+
+  const getChannelMembers: Function = async (): Promise<void> => {
+    const newArr: any[] = [];
+    channelDetails?.members.forEach(async (member) => {
+      const users = collection(db, "users");
+      const req = query(users, where("accId", "==", member), limit(1));
+      await getDocs(req).then((res: any) => {
+        res.docs.forEach((doc: any) => {
+          const data = doc.data().name;
+          newArr.push(data);
+          setChannelMembers(newArr);
+        });
+      });
+    });
+  };
+
+  const sendChannelMessage: Function = async (): Promise<void> => {
+    try {
+      if (panelId && channelDetails) {
+        await addDoc(collection(db, "channels", panelId, "channel-messages"), {
+          user: loginContext.userInfo.name,
+          UserImage: "",
+          message: channelMessengeInput,
+          timestamp: serverTimestamp(),
+          seconds: Date.now(),
+        });
+      }
+    } catch (e: any) {
+      console.log(e);
+    }
+  };
+
   const addMessage: Function = async () => {
     try {
       if (panelId && userInfo) {
@@ -253,7 +292,6 @@ const ChatPanel: FC = () => {
       );
       onSnapshot(q, (snapshot: any) => {
         setAllDirectMessages(snapshot.docs.map((doc: any) => doc.data()));
-        scrollDown();
       });
       console.log(allDirectMessages);
       handleReadMessages();
@@ -263,15 +301,43 @@ const ChatPanel: FC = () => {
     <div className="text-center w-full h-screen">
       <div className="flex justify-between p-[20px] border-b-2">
         {channelDetails && (
-          <div
-            className="flex items-center justify-center w-fit btn"
-            onClick={() => {
-              setShowChannelDetails(true);
-            }}
-          >
-            <h1 className="font-bold">{channelDetails?.name}</h1>
-            <span className="material-symbols-outlined pt-1">expand_more</span>
-          </div>
+          <>
+            <div
+              className="flex items-center justify-center w-fit btn"
+              onClick={() => {
+                getChannelMembers();
+                setShowChannelDetails(true);
+              }}
+            >
+              <h1 className="font-bold">{channelDetails?.name}</h1>
+              <span className="material-symbols-outlined pt-1">
+                expand_more
+              </span>
+            </div>
+            <form
+              className="absolute bottom-0 mb-8 border border-gray h-fit w-8/12 rounded-lg flex items-center justify-center"
+              onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+                e.preventDefault();
+                sendChannelMessage();
+                setChannelMessageInput("");
+              }}
+            >
+              <input
+                type="text"
+                className="h-full w-[95%] focus:border-gray-900 p-4 resize-none"
+                value={channelMessengeInput}
+                onChange={(e) => setChannelMessageInput(e.target.value)}
+              />
+              <button
+                type="submit"
+                className="scale-125 mr-4 h-fit mt-auto mb-auto"
+              >
+                <span className="material-symbols-outlined text-center text-gray-500">
+                  send
+                </span>
+              </button>
+            </form>
+          </>
         )}
         {userDetails && (
           <>
@@ -287,7 +353,7 @@ const ChatPanel: FC = () => {
               </span>
             </div>
             <form
-              className="absolute bottom-0 mb-8 border border-gray w:[400px] md:w-[450px] rounded-lg h-[70px] flex  items-end"
+              className="absolute bottom-0 mb-8 border border-gray h-fit w-8/12 rounded-lg flex items-center justify-center"
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 if (directMessage) {
@@ -310,7 +376,7 @@ const ChatPanel: FC = () => {
               />
               <button
                 type="submit"
-                className="mr-4 bg-gray-900 h-[80%] w-[50px]"
+                className="scale-125 mr-4 h-fit mt-auto mb-auto"
               >
                 <span className="material-symbols-outlined text-center text-gray-500">
                   send
@@ -348,11 +414,10 @@ const ChatPanel: FC = () => {
                 </div>
                 <div className="bg-white rounded-md p-4 shadow-lg">
                   <h1 className="text-[13px] font-bold">Members</h1>
-                  {channelDetails?.members.map((member: any) => {
+                  {channelMembers.map((member: any) => {
                     return (
                       <div className="flex justify-between">
-                        <span>{member.name}</span>
-                        <span className="text-stone-400">({member.email})</span>
+                        <span>{member}</span>
                       </div>
                     );
                   })}
