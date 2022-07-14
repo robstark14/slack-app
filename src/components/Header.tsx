@@ -122,10 +122,9 @@ const Header: React.FC = () => {
             <div
               className="z-10 flex justify-between border-b-2 w-100 h-fit hover:bg-gray-300  hover:cursor-pointer bg-gray-100 rounded p-2"
               onClick={(e) => {
-                e.preventDefault();
-                setSearchUser("");
                 navigate(`/${user.accId}`);
                 setNewDirectMessageToDb(user.accId);
+                setSearchUser("");
                 setUserQueryResults([]);
               }}
             >
