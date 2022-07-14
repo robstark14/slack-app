@@ -2,6 +2,7 @@ import {
   collection,
   doc,
   getDocs,
+  limit,
   query,
   serverTimestamp,
   setDoc,
@@ -26,8 +27,12 @@ const Header: React.FC = () => {
       setUserQueryResults([]);
       if (searchUser === "") return;
       const users = collection(db, "users");
-      const req = query(users, where("name", ">=", searchUser));
-      const req2 = query(users, where("name", "<=", searchUser + "\uf8ff"));
+      const req = query(users, where("name", ">=", searchUser), limit(2));
+      const req2 = query(
+        users,
+        where("name", "<=", searchUser + "\uf8ff"),
+        limit(2)
+      );
 
       const NewData: any[] = [];
       await getDocs(req)
@@ -44,7 +49,7 @@ const Header: React.FC = () => {
               });
             })
             .then(() => {
-              setUserQueryResults((prev: any) => NewData.slice(0, 5));
+              setUserQueryResults((prev: any) => NewData);
               console.log(userQueryResults);
             });
         });
