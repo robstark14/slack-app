@@ -17,6 +17,8 @@ const SignUp = ({ setSignUp }: propsInterface) => {
     repassword: string;
   }
 
+  const [isNew, setIsNew] = useState<boolean>(true);
+
   const [signUpInput, setSignUpInput] = useState<signUpContext>({
     name: "",
     email: "",
@@ -31,23 +33,30 @@ const SignUp = ({ setSignUp }: propsInterface) => {
         name: signUpInput.name,
         password: signUpInput.password,
       };
-      await createUser(newUser).then((data: any) => {
-        console.log(data);
-        loginContext.setUserInfo({
-          isLoggedIn: true,
-          name: data.name,
-          accId: data.accId,
-          email: data.email,
-          password: data.password,
-        });
+      await createUser(newUser).then((current: any) => {
+        if (current.isNew) {
+          console.log(current);
+          loginContext.setUserInfo({
+            isLoggedIn: true,
+            name: current.current.name,
+            accId: current.current.accId,
+            email: current.current.email,
+            password: current.current.password,
+          });
+          navigate("/");
+        } else {
+          setIsNew(false);
+        }
       });
-      navigate("/");
     }
   };
 
   return (
     <>
       <h5 className="mx-auto text-bold text-center mb-4 text-2xl">Sign Up!</h5>
+      {!isNew && (
+        <p className="text-red-600 text-center">Email already exists</p>
+      )}
       <div className="grid grid-cols-1 gap-y-2 items-center justify-center my-2">
         <input
           className="shadow appearance-none border rounded w-100 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
