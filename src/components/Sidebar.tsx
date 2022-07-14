@@ -176,7 +176,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
           {channels.map((channel) => {
             if (channel.members.includes(loginContext.userInfo.accId)) {
               return (
-                <div className="flex items-center hover:bg-gray-300 hover:text-black btn px-4 py-0">
+                <div className="flex items-center hover:bg-gray-300 hover:text-black h-fit btn px-4 py-0">
                   #<ChatNav name={channel.name} id={channel.id} />
                 </div>
               );
