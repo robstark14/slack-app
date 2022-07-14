@@ -29,6 +29,10 @@ interface Users {
 interface SelectedUser {
   accId: string;
 }
+// interface NewMessageCount {
+//   newMessageCount: number | null | undefined;
+//   setNewMessageCount: () => number | null | undefined;
+// }
 const SideBar: FC<Props> = ({ setAddChannel }) => {
   const loginContext = useContext(LoginContext);
   const { userInfo, setUserInfo } = loginContext;
@@ -37,6 +41,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
   const [users, setUsers] = useState<Users[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [directMessagesNav, setDirectMessagesNav] = useState<any>([]);
+
   useEffect(() => {
     getAllChannels();
     getDirectMessagesNav();
@@ -92,8 +97,9 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
     );
     onSnapshot(
       q,
-      (snapshot) =>
-        setDirectMessagesNav(snapshot.docs.map((doc) => ({ ...doc.data() })))
+      (snapshot) => {
+        setDirectMessagesNav(snapshot.docs.map((doc) => ({ ...doc.data() })));
+      }
       // console.log(snapshot.docs.map((doc) => ({ ...doc.data() })))
     );
   };
@@ -169,8 +175,9 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
           {channels.map((channel) => (
-            <div className="flex items-center hover:bg-gray-300 hover:text-black btn px-4 py-0">
-              #<ChatNav name={channel.name} id={channel.id} />
+            <div className="flex items-center btn px-4 py-0">
+              #
+              <ChatNav name={channel.name} id={channel.id} />
             </div>
           ))}
         </div>

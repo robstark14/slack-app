@@ -11,6 +11,8 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  updateDoc,
+  where,
 } from "firebase/firestore";
 
 import React, {
@@ -24,6 +26,7 @@ import React, {
 import { useParams } from "react-router-dom";
 import { db } from "../config/firebase_config";
 import ChatMessages from "./ChatMessages";
+import newMessageCountContext from "../NewMessageCountContext";
 
 // type Props = {};
 // interface ChannelDetails {
@@ -77,6 +80,10 @@ const ChatPanel: FC = () => {
   const [channelMessages, setChannelMessages] = useState<ChannelMessages[]>([]);
   const loginContext = useContext(LoginContext);
   const { userInfo, setUserInfo } = loginContext;
+  const { newMessageCount, setNewMessageCount } = useContext(
+    newMessageCountContext
+  );
+  const [newMessagesArr, setNewMessagesArr] = useState<any>([]);
   useEffect(() => {
     if (panelId) {
       onSnapshot(doc(db, "channels", panelId), (snapshot: any) =>
@@ -86,11 +93,12 @@ const ChatPanel: FC = () => {
         doc(db, "users", userInfo.accId, "messages", panelId),
         (snapshot: any) => setUserDetails(snapshot.data())
       );
+      getdirectMessages();
+      scrollDown();
+      getChannelMessages();
+      getUnreadMessages();
     }
-    getChannelMessages();
-    getdirectMessages();
-    scrollDown();
-    // return () => scrollDown();
+    return () => scrollDown();
   }, [panelId]);
   const targetChat = useRef<HTMLDivElement | null>(null);
   const scrollDown: Function = () => {
@@ -136,6 +144,7 @@ const ChatPanel: FC = () => {
             timestamp: serverTimestamp(),
             from: userInfo.name,
             fromAccId: userInfo.accId,
+            unread: false,
           }
         );
 
@@ -148,6 +157,7 @@ const ChatPanel: FC = () => {
             userId: userInfo.accId,
             userImage: "",
             timestamp: serverTimestamp(),
+            unreadMessages: newMessageCount,
           }
         );
         await addDoc(
@@ -164,18 +174,72 @@ const ChatPanel: FC = () => {
             fromAccId: userInfo.accId,
             message: directMessage,
             timestamp: serverTimestamp(),
+            unread: true,
           }
         );
       }
-
+      // if (newMessageCount) {
+      // setNewMessageCount(newMessageCount + 1);
+      // }
       // console.log(directMsg);
     } catch (err: any) {
       console.log(err.message);
     }
   };
+  const getUnreadMessages = () => {
+    if (panelId) {
+      const q = query(
+        collection(
+          db,
+          "users",
+          userInfo.accId,
+          "messages",
+          panelId,
+          "message-thread"
+        ),
+        where("unread", "==", true)
+      );
 
+      onSnapshot(q, (snapshot) =>
+        // console.log(snapshot.docs.map((doc) => doc.data()))
+        {
+          setNewMessageCount(snapshot.docs.map((doc) => doc.data()).length);
+          setNewMessagesArr(snapshot.docs);
+          console.log(newMessagesArr);
+        }
+      );
+    }
+  };
+  const handleReadMessages = () => {
+    if (panelId) {
+      newMessagesArr.forEach(async (msg: { unread: boolean; id: string }) => {
+        if (!msg.id) {
+          //   return;
+          // } else {
+          await updateDoc(
+            doc(
+              db,
+              "users",
+              userInfo.accId,
+              "messages",
+              panelId,
+              "message-thread",
+              msg.id
+            ),
+            {
+              unread: false,
+            }
+          );
+        }
+
+        console.log(msg.id);
+      });
+      setNewMessageCount(0);
+      getUnreadMessages();
+    }
+  };
   const getdirectMessages: Function = () => {
-    if (panelId && userInfo) {
+    if (panelId) {
       const q = query(
         collection(
           db,
@@ -192,6 +256,7 @@ const ChatPanel: FC = () => {
         scrollDown();
       });
       console.log(allDirectMessages);
+      handleReadMessages();
     }
   };
   return (
@@ -231,6 +296,7 @@ const ChatPanel: FC = () => {
                   getChannelMessages();
                   console.log(directMessage);
                   setDirectMessage("");
+                  getUnreadMessages();
                 }
               }}
             >
@@ -238,9 +304,9 @@ const ChatPanel: FC = () => {
                 type="text"
                 className="h-full w-[95%] focus:border-gray-900 p-4 resize-none"
                 value={directMessage}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setDirectMessage(e.target.value)
-                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setDirectMessage(e.target.value);
+                }}
               />
               <button
                 type="submit"
