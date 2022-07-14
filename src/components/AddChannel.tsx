@@ -5,6 +5,7 @@ import {
   where,
   getDocs,
   serverTimestamp,
+  onSnapshot,
 } from "firebase/firestore";
 import React, {
   FC,
@@ -40,6 +41,11 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     userContext.userInfo,
   ]);
   const [memberInput, setMemberInput] = useState<string>("");
+  const [isNewChannel, setIsNewChannel] = useState<boolean>(false);
+  const loginContext = useContext(LoginContext);
+  const { userInfo, setUserInfo } = loginContext;
+  const [addedUser, setAddedUser] = useState<any>(null);
+  const [displayUsers, setdisplayUsers] = useState<boolean>(false);
 
   useEffect(() => {
     const debounceFn = setTimeout(async () => {
@@ -79,6 +85,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
         name: channelName,
         members: membersArr.map((member) => member.accId),
         channelCreation: serverTimestamp(),
+        channelCreator: userContext.userInfo.name,
       });
       console.log(newChannelDoc);
 
@@ -86,6 +93,30 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
         collection(db, "channels", newChannelDoc.id, "channel-messages"),
         {}
       );
+
+      addUserToChannel(newChannelDoc.id);
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
+
+  const addUserToChannel: Function = async (channelId: string) => {
+    try {
+      // await setDoc(
+      //   doc(db, "channels", channelId),
+      //   {
+      //     userName: selectedUser.name,
+      //     userId: selectedUser.accId,
+      //     userImage: "",
+      //     timestamp: serverTimestamp(),
+      //   }
+      // );
+      const q = query(
+        collection(db, "users"),
+        where("accId", "==", addedUser.id)
+      );
+      onSnapshot(q, (snapshot: any) => membersArr.push(snapshot.doc.data()));
+      // console.log(directMsg);
     } catch (err: any) {
       console.log(err.message);
     }
@@ -148,6 +179,7 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
                 membersQuery={memeberQueryResults}
                 setMembersArr={setMembersArr}
                 membersArr={membersArr}
+                channelName={channelName}
                 setMembersInput={setMemberInput}
               />
             </div>
@@ -155,7 +187,9 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
           <button
             className="rounded bg-[#481249] z-0 p-1 text-white"
             onClick={() => {
+              if (!channelName && membersArr.length < 2) return;
               addNewChannel();
+              setMembersArr([userContext.userInfo]);
               setAddChannel(false);
             }}
           >
