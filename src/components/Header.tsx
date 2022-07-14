@@ -44,7 +44,7 @@ const Header: React.FC = () => {
               });
             })
             .then(() => {
-              setUserQueryResults((prev: any) => NewData.slice(0, 8));
+              setUserQueryResults((prev: any) => NewData.slice(0, 5));
               console.log(userQueryResults);
             });
         });
@@ -107,14 +107,21 @@ const Header: React.FC = () => {
           <span className=" material-symbols-outlined">search</span>
         </button>
 
-        <div className="absolute top-[43px] w-[55%] h-fit flex flex-col gap-y-1 bg-gray-100 p-2 shadow-xl">
+        <div
+          id="queryResult"
+          className={`absolute top-[43px] w-[55%] h-fit flex flex-col gap-y-1 bg-gray-100 p-2 shadow-xl ${
+            userQueryResults.length > 0 ? "" : "hidden"
+          }`}
+        >
           {userQueryResults.map((user: any) => (
             <div
               className="z-10 flex justify-between border-b-2 w-100 h-fit hover:bg-gray-300  hover:cursor-pointer bg-gray-100 rounded p-2"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 setSearchUser("");
                 navigate(`/${user.accId}`);
                 setNewDirectMessageToDb(user.accId);
+                setUserQueryResults([]);
               }}
             >
               <span className="font-bold">{user.name}</span>

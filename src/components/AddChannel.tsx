@@ -51,15 +51,19 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     const debounceFn = setTimeout(async () => {
       setQueryResults([]);
       if (memberInput === "") return;
+      const newData: any = [];
       const users = collection(db, "users");
-      const req = query(users, where("name", "==", memberInput));
-      await getDocs(req).then((res) =>
-        res.docs.forEach((doc) => {
-          const newData = [];
-          newData.push(doc.data());
+      const req = query(users, where("name", ">=", memberInput));
+      await getDocs(req)
+        .then((res) =>
+          res.docs.forEach((doc) => {
+            newData.push(doc.data());
+          })
+        )
+        .then(() => {
+          console.log(newData);
           setQueryResults(newData);
-        })
-      );
+        });
     }, 1000);
     return () => {
       clearTimeout(debounceFn);
