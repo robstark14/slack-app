@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const [recentModal, setRecentModal] = useState<boolean>(false);
   const [searchUser, setSearchUser] = useState<string>("");
   const ref = useRef();
-  const [userQueryResults, setUserQueryResults] = useState<any>([]);
+  const [userQueryResults, setUserQueryResults] = useState<any[]>([]);
   const navigate = useNavigate();
   const loginContext = useContext(LoginContext);
   const { userInfo, setUserInfo } = loginContext;
@@ -26,22 +26,37 @@ const Header: React.FC = () => {
       setUserQueryResults([]);
       if (searchUser === "") return;
       const users = collection(db, "users");
-      const req = query(users, where("name", "==", searchUser));
-      await getDocs(req).then((res) =>
-        res.docs.forEach((doc) => {
-          const newData = [];
-          newData.push(doc.data());
-          setUserQueryResults(newData);
-        })
-      );
+      const req = query(users, where("name", ">=", searchUser));
+      const req2 = query(users, where("name", "<=", searchUser + "\uf8ff"));
+
+      const NewData: any[] = [];
+      await getDocs(req)
+        .then((res) =>
+          res.docs.forEach((doc) => {
+            NewData.push(doc.data());
+          })
+        )
+        .then(async () => {
+          await getDocs(req2)
+            .then((res) => {
+              res.docs.forEach((res) => {
+                NewData.push(res.data());
+              });
+            })
+            .then(() => {
+              setUserQueryResults((prev: any) => NewData.slice(0, 5));
+              console.log(userQueryResults);
+            });
+        });
     }, 1000);
     return () => {
       clearTimeout(debounceFn);
     };
   }, [searchUser]);
-  const setNewDirectMessageToDb: Function = async () => {
+  const setNewDirectMessageToDb: Function = async (queryAccId: any) => {
     try {
       userQueryResults.map(async (user: { name: string; accId: string }) => {
+        if (queryAccId !== user.accId) return;
         await setDoc(doc(db, "users", userInfo.accId, "messages", user.accId), {
           userName: user.name,
           userId: user.accId,
@@ -92,19 +107,28 @@ const Header: React.FC = () => {
           <span className=" material-symbols-outlined">search</span>
         </button>
 
-        {userQueryResults.map((user: any) => (
-          <div
-            className="z-10 flex justify-between border-b-2 w-100 h-fit hover:bg-gray-300  hover:cursor-pointer absolute top-[40px] w-[55%] bg-gray-100 rounded p-2"
-            onClick={() => {
-              setSearchUser("");
-              navigate(`/${user.accId}`);
-              setNewDirectMessageToDb();
-            }}
-          >
-            <span className="font-bold">{user.name}</span>
-            <span className="text-gray-400">{user.email}</span>
-          </div>
-        ))}
+        <div
+          id="queryResult"
+          className={`absolute top-[43px] w-[55%] h-fit flex flex-col gap-y-1 bg-gray-100 p-2 shadow-xl ${
+            userQueryResults.length > 0 ? "" : "hidden"
+          }`}
+        >
+          {userQueryResults.map((user: any) => (
+            <div
+              className="z-10 flex justify-between border-b-2 w-100 h-fit hover:bg-gray-300  hover:cursor-pointer bg-gray-100 rounded p-2"
+              onClick={(e) => {
+                e.preventDefault();
+                setSearchUser("");
+                navigate(`/${user.accId}`);
+                setNewDirectMessageToDb(user.accId);
+                setUserQueryResults([]);
+              }}
+            >
+              <span className="font-bold">{user.name}</span>
+              <span className="text-gray-400">{user.email}</span>
+            </div>
+          ))}
+        </div>
       </form>
       <div
         className="flex items-center gap-x-2 group hover:cursor-pointer "

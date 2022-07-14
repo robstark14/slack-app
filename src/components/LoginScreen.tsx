@@ -1,7 +1,12 @@
 import logo from "../logo512.png";
 import React, { useContext, useState } from "react";
 import LoginContext from "../Context";
-import { auth, provider, queryUser } from "../config/firebase_config";
+import {
+  auth,
+  createUser,
+  provider,
+  queryUser,
+} from "../config/firebase_config";
 import SignUp from "./SignUp";
 import { useNavigate } from "react-router-dom";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -64,14 +69,21 @@ const LoginScreen: React.FC = () => {
       const token = credential?.accessToken;
       // The signed-in user info.
       const user = data.user;
-      console.log(user);
+
+      const current = await createUser({
+        name: user.displayName,
+        email: user.email,
+        password: "",
+      });
+
       loginContext.setUserInfo({
         isLoggedIn: true,
-        name: user.displayName,
-        accId: user.uid,
-        email: user.email,
-        // password: data.password,
+        name: current.current.name,
+        accId: current.current.accId,
+        email: current.current.email,
+        password: current.current.password,
       });
+      window.localStorage.setItem("currentUser", current.current.accId);
       // ...
     } catch (err: any) {
       console.log(err.message);
