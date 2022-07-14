@@ -52,7 +52,7 @@ export const createUser: Function = async (newUser: {
   email: string;
   name: string;
   password: string;
-}): Promise<object> => {
+}): Promise<any> => {
   const newUuid: string = uuidv4();
   const users = doc(db, "users", newUuid);
   const current = {
@@ -61,13 +61,24 @@ export const createUser: Function = async (newUser: {
     password: newUser.password,
     accId: newUuid,
   };
-  await setDoc(users, current);
   const find = query(
     collection(db, "users"),
     where("email", "==", current.email),
     limit(1)
   );
-  return await getDocs(find).then((res) => res.docs[0].data());
+  try {
+    const result = await getDocs(find)
+      .then((res) => res.docs[0].data())
+      .then((data) => {
+        return { current: data, isNew: false };
+      });
+    console.log(result);
+    return result;
+  } catch (e) {
+    await setDoc(users, current);
+    const newUser = await getDocs(find).then((res) => res.docs[0].data());
+    return { current: newUser, isNew: true };
+  }
 };
 
 // const analytics = getAnalytics(app);
