@@ -82,6 +82,7 @@ const ChatPanel: FC = () => {
   const loginContext = useContext(LoginContext);
   const { userInfo, setUserInfo } = loginContext;
   useEffect(() => {
+    scrollDown();
     if (panelId) {
       onSnapshot(doc(db, "channels", panelId), (snapshot: any) => {
         console.log(snapshot.data());
@@ -127,17 +128,17 @@ const ChatPanel: FC = () => {
   };
 
   const getChannelMembers: Function = async (): Promise<void> => {
+    const newArr: any[] = [];
     channelDetails?.members.forEach(async (member) => {
       const users = collection(db, "users");
       const req = query(users, where("accId", "==", member), limit(1));
-      await getDocs(req)
-        .then((res: any) => res.docs[0].data())
-        .then((user) => {
-          console.log(user.name);
-          const newArr = [];
-          newArr.push(user.name);
+      await getDocs(req).then((res: any) => {
+        res.docs.forEach((doc: any) => {
+          const data = doc.data().name;
+          newArr.push(data);
           setChannelMembers(newArr);
         });
+      });
     });
   };
 
@@ -228,7 +229,6 @@ const ChatPanel: FC = () => {
       );
       onSnapshot(q, (snapshot: any) => {
         setAllDirectMessages(snapshot.docs.map((doc: any) => doc.data()));
-        scrollDown();
       });
       console.log(allDirectMessages);
     }
@@ -241,6 +241,7 @@ const ChatPanel: FC = () => {
             <div
               className="flex items-center justify-center w-fit btn"
               onClick={() => {
+                getChannelMembers();
                 setShowChannelDetails(true);
               }}
             >
@@ -254,6 +255,7 @@ const ChatPanel: FC = () => {
               onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                 e.preventDefault();
                 sendChannelMessage();
+                setChannelMessageInput("");
               }}
             >
               <input

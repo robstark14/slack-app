@@ -4,7 +4,14 @@ import Header from "./components/Header";
 import SideBar from "./components/Sidebar";
 import { Routes, Route } from "react-router-dom";
 import ChatPanel from "./components/ChatPanel";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  limit,
+  getDocs,
+  where,
+} from "firebase/firestore";
 import { auth, db } from "./config/firebase_config";
 import AddChannel from "./components/AddChannel";
 import LoginScreen from "./components/LoginScreen";
@@ -53,6 +60,27 @@ function App() {
   //     }
   //   });
   // };
+
+  useEffect(() => {
+    try {
+      const existing = window.localStorage.getItem("currentUser");
+      if (existing) {
+        const users = collection(db, "users");
+        const req = query(users, where("accId", "==", existing), limit(1));
+        getDocs(req)
+          .then((res) => res.docs[0].data())
+          .then((data) => {
+            setUserInfo({
+              isLoggedIn: true,
+              name: data.name,
+              password: data.password,
+              email: data.email,
+              accId: data.accId,
+            });
+          });
+      }
+    } catch (e) {}
+  });
 
   return (
     <>

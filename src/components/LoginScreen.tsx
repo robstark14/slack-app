@@ -13,6 +13,7 @@ const LoginScreen: React.FC = () => {
   interface loginInterface {
     email?: string;
     password?: string;
+    isIncorrect?: boolean;
   }
 
   const [loginInput, setLoginInput] = useState<loginInterface>({
@@ -25,19 +26,34 @@ const LoginScreen: React.FC = () => {
 
   //login handler
   async function handeLogin(): Promise<void> {
-    await queryUser(loginInput).then((data: any) => {
-      if (!data) return;
-      if (data.password === loginInput.password) {
-        loginContext.setUserInfo({
-          isLoggedIn: true,
-          name: data.name,
-          accId: data.accId,
-          email: data.email,
-          password: data.password,
-        });
-        navigate("/");
-      }
-    });
+    try {
+      await queryUser(loginInput).then((data: any) => {
+        if (!data) return;
+        if (data.password === loginInput.password) {
+          loginContext.setUserInfo({
+            isLoggedIn: true,
+            name: data.name,
+            accId: data.accId,
+            email: data.email,
+            password: data.password,
+          });
+          window.localStorage.setItem("currentUser", data.accId);
+          navigate("/");
+        } else {
+          setLoginInput({
+            email: loginInput.email,
+            password: "",
+            isIncorrect: true,
+          });
+        }
+      });
+    } catch (e: any) {
+      setLoginInput({
+        email: "",
+        password: "",
+        isIncorrect: true,
+      });
+    }
   }
   const signInWithGoogle: Function = async () => {
     try {
@@ -110,6 +126,11 @@ const LoginScreen: React.FC = () => {
             handeLogin();
           }}
         >
+          {loginInput.isIncorrect && (
+            <p className="text-red-600 text-center">
+              Incorrect Email or Password
+            </p>
+          )}
           {!isSignUp && (
             <div className="flex flex-col gap-y-2 justify-center">
               <div>
@@ -124,6 +145,7 @@ const LoginScreen: React.FC = () => {
                     setLoginInput((prev) => ({
                       ...prev,
                       email: value,
+                      isIncorrect: false,
                     }));
                   }}
                 ></input>
@@ -139,6 +161,7 @@ const LoginScreen: React.FC = () => {
                     setLoginInput((prev) => ({
                       ...prev,
                       password: value,
+                      isIncorrect: false,
                     }));
                   }}
                   value={loginInput.password}

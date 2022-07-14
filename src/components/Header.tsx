@@ -55,6 +55,18 @@ const Header: React.FC = () => {
       console.log(err.message);
     }
   };
+
+  const handleLogout = () => {
+    setUserInfo({
+      isLoggedIn: false,
+      name: "",
+      accId: "",
+      email: "",
+      password: "",
+    });
+    window.localStorage.clear();
+    window.location.reload();
+  };
   return (
     <div className="w-full h-full bg-gray-900 shadow-sm grid grid-cols-[1.85fr,7fr,1fr] gap-2 col-span-2">
       <div></div>
@@ -94,6 +106,15 @@ const Header: React.FC = () => {
           </div>
         ))}
       </form>
+      <div
+        className="flex items-center gap-x-2 group hover:cursor-pointer "
+        onClick={handleLogout}
+      >
+        <span className="text-white group-hover:text-red-600">Logout </span>
+        <span className=" material-symbols-outlined text-white group-hover:text-red-600">
+          logout
+        </span>
+      </div>
     </div>
   );
 };
