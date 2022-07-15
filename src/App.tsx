@@ -22,6 +22,8 @@ import LoginContext, {
 import Footer from "./components/Footer";
 import { ChannelObjects } from "./components/Sidebar";
 import { onAuthStateChanged } from "firebase/auth";
+import useNewMessageContext from "./Context";
+import NewMessageCountContext from "./NewMessageCountContext";
 
 function App() {
   const [addChannel, setAddChannel] = useState<boolean>(false);
@@ -33,9 +35,13 @@ function App() {
     email: "",
     password: "",
   });
+  const [newMessageCount, setNewMessageCount] = useState<number>(0);
   // const [isAuth, setIsAuth] = useState(false);
-  const value = { userInfo, setUserInfo };
-
+  const value = { userInfo, setUserInfo, newMessageCount, setNewMessageCount };
+  const newMessageValue = {
+    newMessageCount: newMessageCount,
+    setNewMessageCount: setNewMessageCount,
+  };
   //see context.ts for footerData
   const footerData: footerDataInterface = {
     description:
@@ -80,31 +86,38 @@ function App() {
           });
       }
     } catch (e) {}
-  });
+  }, []);
 
   return (
     <>
       <LoginContext.Provider value={value}>
-        {!userInfo.isLoggedIn && (
-          <div className="h-screen bg-gray-700 grid grid-rows-[70%, 30%] overflow-x-hidden grid-cols-1 justify-end items-end">
-            <LoginScreen />
-            <Footer {...footerData} />
-          </div>
-        )}
-        {userInfo.isLoggedIn && (
-          <div className="overflow-hidden grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-100 w-screen ">
-            <Header />
-            <SideBar setAddChannel={setAddChannel} />
-            <AddChannel setAddChannel={setAddChannel} addChannel={addChannel} />
-            <Routes>
-              <Route path="/:panelId" element={<ChatPanel />}></Route>
-              <Route
-                path="/"
-                element={<h1>This is a Slack Clone by Team RoRo</h1>}
-              ></Route>
-            </Routes>
-          </div>
-        )}
+        <NewMessageCountContext.Provider value={newMessageValue}>
+          {!userInfo.isLoggedIn && (
+            <div className="h-screen bg-gray-700 grid grid-rows-[70%, 30%] overflow-x-hidden grid-cols-1 justify-end items-end">
+              <LoginScreen />
+              <Footer {...footerData} />
+            </div>
+          )}
+          {userInfo.isLoggedIn && (
+            <div className="overflow-hidden grid grid-rows-[40px,1fr] grid-cols-[260px,1fr] h-screen w-screen ">
+              <Header />
+              <SideBar setAddChannel={setAddChannel} />
+              {addChannel && (
+                <AddChannel
+                  setAddChannel={setAddChannel}
+                  addChannel={addChannel}
+                />
+              )}
+              <Routes>
+                <Route path="/:panelId" element={<ChatPanel />}></Route>
+                <Route
+                  path="/"
+                  element={<h1>This is a Slack Clone by Team RoRo</h1>}
+                ></Route>
+              </Routes>
+            </div>
+          )}
+        </NewMessageCountContext.Provider>
       </LoginContext.Provider>
     </>
   );

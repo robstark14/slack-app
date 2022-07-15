@@ -19,17 +19,22 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBrOcaDJ8I9kLSx0u28BZxH9WiUXYpRA-Y",
-  authDomain: "slack-app-17978.firebaseapp.com",
-  projectId: "slack-app-17978",
-  storageBucket: "slack-app-17978.appspot.com",
-  messagingSenderId: "306400928071",
-  appId: "1:306400928071:web:7c552122ae1d3198292c62",
-  measurementId: "G-NVGDHSRD88",
-  databaseURL: "slack-app-17978.firebaseio.com",
-};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBNWK00PxRKXWS_Ma__PG9BU0OTKmBS9xw",
+
+  authDomain: "slack-clone-47bf6.firebaseapp.com",
+
+  projectId: "slack-clone-47bf6",
+
+  storageBucket: "slack-clone-47bf6.appspot.com",
+
+  messagingSenderId: "262486620835",
+
+  appId: "1:262486620835:web:c648ba0c7708601f1b1d16",
+
+  measurementId: "G-DRBR8ZSEZ3",
+};
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
@@ -82,3 +87,15 @@ export const createUser: Function = async (newUser: {
 };
 
 // const analytics = getAnalytics(app);
+// Import the functions you need from the SDKs you need
+//Account1
+// const firebaseConfig = {
+//   apiKey: "AIzaSyBrOcaDJ8I9kLSx0u28BZxH9WiUXYpRA-Y",
+//   authDomain: "slack-app-17978.firebaseapp.com",
+//   projectId: "slack-app-17978",
+//   storageBucket: "slack-app-17978.appspot.com",
+//   messagingSenderId: "306400928071",
+//   appId: "1:306400928071:web:7c552122ae1d3198292c62",
+//   measurementId: "G-NVGDHSRD88",
+//   databaseURL: "slack-app-17978.firebaseio.com",
+// };
