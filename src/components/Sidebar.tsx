@@ -176,14 +176,17 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
             add
           </span>
         </div>
-        <div className="grid h-[150px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
+        <div className="flex flex-col h-[150px] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
           {/* <span className="material-symbols-outlined scale-75 pr-2">lock</span>
           <span>batch19 </span> */}
           {channels.map((channel) => {
             if (channel.members.includes(loginContext.userInfo.accId)) {
               return (
-                <div className="flex items-center hover:bg-gray-300 hover:text-black h-fit btn px-4 py-0">
-                  #<ChatNav name={channel.name} id={channel.id} />
+                <div
+                  className="flex items-center hover:bg-gray-300 hover:text-black h-fit btn py-0"
+                  key={channel.id}
+                >
+                  <ChatNav name={channel.name} id={channel.id} />
                 </div>
               );
             }
@@ -202,7 +205,7 @@ const SideBar: FC<Props> = ({ setAddChannel }) => {
         <div className="text-white w-full grid text-left h-[90%] overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-400">
           {directMessagesNav?.map((dm: any) => {
             return (
-              <div className="px-2">
+              <div>
                 <ChatNav name={dm.userName} id={dm.userId} />
               </div>
             );

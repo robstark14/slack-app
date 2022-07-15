@@ -7,7 +7,7 @@ const MemberSearchPanel = ({
   channelName,
   setMembersInput,
 }: {
-  membersQuery: { name: string; email: string }[];
+  membersQuery: { name: string; email: string; accId: string }[];
   setMembersArr: React.Dispatch<SetStateAction<memberArrInterface[]>>;
   membersArr: memberArrInterface[];
   channelName: string;
@@ -19,6 +19,7 @@ const MemberSearchPanel = ({
     returnArr.push(
       <div
         className="flex flex-col border-b-2 w-full h-fit cursor-pointer"
+        key={member.accId}
         onClick={() => {
           const currentArr = membersArr;
           currentArr.push(member);

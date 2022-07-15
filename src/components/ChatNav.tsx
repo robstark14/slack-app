@@ -48,7 +48,7 @@ const ChatNav: FC<Props> = ({ name, id }) => {
       // onClick={() => {
       //   openChannel();
       // }}
-      className="w-full flex justify-between hover:bg-gray-300 hover:text-black"
+      className="w-full flex justify-between hover:bg-gray-300 hover:text-black pl-2"
     >
       <p className="text-left  py-1 px-2 w-full bg-inherit">{name}</p>
       <span className="w-4">
