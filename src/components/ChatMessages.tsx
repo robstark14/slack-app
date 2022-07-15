@@ -1,18 +1,18 @@
-import React from "react";
+import React, { FC } from "react";
 
-type Props = {
+interface Props {
   user: string;
   userImage: string;
   message: string;
   timestamp: string | any;
-};
+}
 
-export default function ChatMessages({
+const ChatMessages: FC<Props> = ({
   userImage,
   user,
   message,
   timestamp,
-}: Props) {
+}: Props) => {
   return (
     <div
       className="w-full flex items-center text-left p-4 text-[15px]"
@@ -32,4 +32,5 @@ export default function ChatMessages({
       </div>
     </div>
   );
-}
+};
+export default ChatMessages;

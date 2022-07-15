@@ -101,6 +101,9 @@ const Header: React.FC = () => {
           className="w-[90%] h-2/3 opacity-30 rounded text-black focus:outline-none self-center p-2"
           placeholder="Search User"
           value={searchUser}
+          onBlur={(e) => {
+            setSearchUser("");
+          }}
           onChange={(e) => {
             setSearchUser(e.target.value);
           }}

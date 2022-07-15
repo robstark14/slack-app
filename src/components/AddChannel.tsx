@@ -76,8 +76,15 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
     const returnArr: any = [];
     members.map((member) => {
       returnArr.push(
-        <div key={addedMemKeys}>
-          <span key={addedMemKeys}>{member.name}</span>
+        <div
+          // key={addedMemKeys}
+          key={member.accId}
+        >
+          <span
+          //  key={member.accId}
+          >
+            {member.name}
+          </span>
         </div>
       );
     });
@@ -192,10 +199,11 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
           <button
             className="rounded bg-[#481249] z-0 p-1 text-white"
             onClick={() => {
-              if (!channelName && membersArr.length < 2) return;
-              addNewChannel();
-              setMembersArr([userContext.userInfo]);
-              setAddChannel(false);
+              if (channelName && membersArr.length >= 2) {
+                addNewChannel();
+                setMembersArr([userContext.userInfo]);
+                setAddChannel(false);
+              }
             }}
           >
             Add Channel
