@@ -60,15 +60,20 @@ const Header: React.FC = () => {
   }, [searchUser]);
   const setNewDirectMessageToDb: Function = async (queryAccId: any) => {
     try {
-      userQueryResults.map(async (user: { name: string; accId: string }) => {
-        if (queryAccId !== user.accId) return;
-        await setDoc(doc(db, "users", userInfo.accId, "messages", user.accId), {
-          userName: user.name,
-          userId: user.accId,
-          userImage: "",
-          timestamp: serverTimestamp(),
-        });
-      });
+      userQueryResults.map(
+        async (user: { name: string; accId: string; userImage: string }) => {
+          if (queryAccId !== user.accId) return;
+          await setDoc(
+            doc(db, "users", userInfo.accId, "messages", user.accId),
+            {
+              userName: user.name,
+              userId: user.accId,
+              userImage: user.userImage ? user.userImage : "",
+              timestamp: serverTimestamp(),
+            }
+          );
+        }
+      );
 
       // console.log(directMsg);
     } catch (err: any) {

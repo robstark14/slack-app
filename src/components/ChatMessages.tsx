@@ -21,7 +21,7 @@ const ChatMessages: FC<Props> = ({
       <img
         src={userImage}
         alt="img"
-        className="w-[36px] h-[36px] object-contain mr-2 rounded-md"
+        className="w-[36px] h-[36px] object-cover mr-2 rounded-md"
       />
       <div>
         <span className="font-bold mr-2">{user}</span>

@@ -56,8 +56,10 @@ interface UserDetails {
   name: string;
   email: string;
   accId: string;
+  userImage: string;
 }
 interface AllDirectMessages {
+  fromUserImage: any;
   fromAccId: string;
   from: string;
   message: string;
@@ -65,7 +67,16 @@ interface AllDirectMessages {
   allDirectMessages: object[] | null;
   setDirectMessages: React.Dispatch<SetStateAction<object[] | undefined>>;
 }
-const ChatPanel: FC = () => {
+interface Props {
+  userImageUrl: string | undefined;
+  downloadUserImage: () => void;
+  currentUserDetails: any;
+}
+const ChatPanel: FC<Props> = ({
+  userImageUrl,
+  downloadUserImage,
+  currentUserDetails,
+}: Props) => {
   const { panelId } = useParams();
   const [channelDetails, setChannelDetails] = useState<
     ChannelDetails | null | undefined
@@ -91,8 +102,8 @@ const ChatPanel: FC = () => {
   const [newMessagesArr, setNewMessagesArr] = useState<any>([]);
   const location = useLocation();
   useEffect(() => {
-    scrollDown();
-    if (panelId && `/${panelId}` === location.pathname) {
+    // scrollDown();
+    if (panelId) {
       onSnapshot(doc(db, "channels", panelId), (snapshot: any) => {
         console.log(snapshot.data());
         setChannelDetails(snapshot.data());
@@ -104,13 +115,14 @@ const ChatPanel: FC = () => {
         console.log(snapshot.data());
       });
       getdirectMessages();
-      scrollDown();
+      // scrollDown();
       getChannelMessages();
       getUnreadMessages();
-      console.log(location.pathname);
+      downloadUserImage();
+      console.log(userImageUrl);
     }
     return () => getdirectMessages();
-  }, [panelId]);
+  }, [panelId, userImageUrl]);
   const targetChat = useRef<HTMLDivElement | null>(null);
   const scrollDown: Function = () => {
     const chat = targetChat;
@@ -158,7 +170,7 @@ const ChatPanel: FC = () => {
       if (panelId && channelDetails) {
         await addDoc(collection(db, "channels", panelId, "channel-messages"), {
           user: loginContext.userInfo.name,
-          UserImage: "",
+          userImage: currentUserDetails.userImage,
           message: channelMessengeInput,
           timestamp: serverTimestamp(),
           seconds: Date.now(),
@@ -188,6 +200,7 @@ const ChatPanel: FC = () => {
             from: userInfo.name,
             fromAccId: userInfo.accId,
             unread: false,
+            fromUserImage: currentUserDetails.userImage,
           }
         );
 
@@ -216,6 +229,7 @@ const ChatPanel: FC = () => {
             from: userInfo.name,
             fromAccId: userInfo.accId,
             message: directMessage,
+            fromUserImage: currentUserDetails.userImage,
             timestamp: serverTimestamp(),
             unread: true,
           }
@@ -397,12 +411,13 @@ const ChatPanel: FC = () => {
         )}
         {showChannelDetails && (
           <div
-            className="bg-black absolute top-0 left-0 w-screen h-screen opacity-60"
-            onClick={() => {
-              setShowChannelDetails((prev) => !prev);
+            className="bg-black absolute top-0 left-0 w-screen h-screen opacity-95"
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              if (e.target === e.currentTarget)
+                setShowChannelDetails((prev) => !prev);
             }}
           >
-            <div className="relative top-[20%] left-[45%] h-max w-[320px] bg-stone-100 rounded shadow-md grid text-left">
+            <div className="relative top-[20%] left-[45%] h-max w-[320px] bg-gray-500 rounded shadow-md grid text-left z-10">
               <div
                 className="absolute right-0 top-0  w-8 h-8 rounded-full btn"
                 onClick={() => {
@@ -444,11 +459,12 @@ const ChatPanel: FC = () => {
         {showUserDetails && (
           <div
             className="bg-black absolute top-0 left-0 w-screen h-screen opacity-60"
-            onClick={() => {
-              setShowUserDetails((prev) => !prev);
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              if (e.target === e.currentTarget)
+                setShowUserDetails((prev) => !prev);
             }}
           >
-            <div className="relative top-[20%] left-[45%] h-max w-[320px] bg-stone-100 rounded shadow-md grid text-left">
+            <div className="relative top-[20%] left-[45%] h-max w-[320px] bg-gray-500 rounded shadow-md grid text-left">
               <div
                 className="absolute right-0 top-0  w-8 h-8 rounded-full btn"
                 onClick={() => {
@@ -484,7 +500,11 @@ const ChatPanel: FC = () => {
           return (
             <ChatMessages
               user={msg.from}
-              userImage="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              userImage={
+                msg.fromUserImage
+                  ? msg.fromUserImage
+                  : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+              }
               message={msg?.message}
               timestamp={msg?.timestamp}
             />
