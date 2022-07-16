@@ -81,8 +81,7 @@ export const createUser: Function = async (newUser: {
     return result;
   } catch (e) {
     await setDoc(users, current);
-    const newUser = await getDocs(find).then((res) => res.docs[0].data());
-    return { current: newUser, isNew: true };
+    return { current: current, isNew: true };
   }
 };
 

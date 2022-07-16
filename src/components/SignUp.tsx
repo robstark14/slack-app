@@ -44,6 +44,7 @@ const SignUp = ({ setSignUp }: propsInterface) => {
             password: current.current.password,
           });
           navigate("/");
+          window.localStorage.setItem("currentUser", current.current.accId);
         } else {
           setIsNew(false);
         }

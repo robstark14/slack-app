@@ -101,6 +101,9 @@ const Header: React.FC = () => {
           className="w-[90%] h-2/3 opacity-30 rounded text-black focus:outline-none self-center p-2"
           placeholder="Search User"
           value={searchUser}
+          onBlur={(e) => {
+            setSearchUser("");
+          }}
           onChange={(e) => {
             setSearchUser(e.target.value);
           }}
@@ -122,10 +125,9 @@ const Header: React.FC = () => {
             <div
               className="z-10 flex justify-between border-b-2 w-100 h-fit hover:bg-gray-300  hover:cursor-pointer bg-gray-100 rounded p-2"
               onClick={(e) => {
-                e.preventDefault();
-                setSearchUser("");
                 navigate(`/${user.accId}`);
                 setNewDirectMessageToDb(user.accId);
+                setSearchUser("");
                 setUserQueryResults([]);
               }}
             >

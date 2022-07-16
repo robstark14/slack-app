@@ -65,11 +65,11 @@ const AddChannel: FC<Props> = ({ setAddChannel, addChannel }) => {
           console.log(newData);
           setQueryResults(newData);
         });
-    }, 1000);
+    }, 2000);
     return () => {
       clearTimeout(debounceFn);
     };
-  }, [memberInput, membersArr]);
+  }, [memberInput]);
 
   const AddedMembers = ({ members }: { members: memberArrInterface[] }) => {
     const addedMemKeys = useId();
